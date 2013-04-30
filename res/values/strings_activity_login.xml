@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_usuario">Usuário</string>
+    <string name="prompt_password">Senha</string>
+    <string name="action_sign_in_register"><b>Logar</b> ou registrar</string>
+    <string name="action_sign_in_short">Logar</string>
+    <string name="action_forgot_password">Recuperar Senha</string>
+    <string name="login_progress_signing_in">Logar&#8230;</string>
+    <string name="error_invalid_username">Este nome de usuário é inválido</string>
+    <string name="error_invalid_password">Esta senha é muito curta</string>
+    <string name="error_incorrect_password">A senha está incorreta</string>
+    <string name="error_field_required">Este campo é obrigatório</string>
+
+</resources>
