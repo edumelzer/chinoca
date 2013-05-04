@@ -33,6 +33,14 @@
             android:name="br.feevale.applogistica.LoginViewActivity"
             android:label="@string/login_view" >
         </activity>
+        <activity
+            android:name="br.feevale.applogistica.EntregasActivity"
+            android:label="@string/title_activity_entregas" >
+        </activity>
+        <activity
+            android:name="br.feevale.applogistica.ProdutosEntregaActivity"
+            android:label="@string/title_activity_produtos_entrega" >
+        </activity>
     </application>
 
 </manifest>

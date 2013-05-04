@@ -137,20 +137,21 @@ public class WebService{
 
         httpGet = new HttpGet(getUrl);
         Log.e("WebGetURL: ",getUrl);
- 
+        
         try {
             response = httpClient.execute(httpGet);
         } catch (Exception e) {
-            Log.e("Groshie:", e.getMessage());
+            Log.e("Groshie:", "Err: " + e.getMessage());
         }
- 
+
         // we assume that the response body contains the error message
         try {
             ret = EntityUtils.toString(response.getEntity());
         } catch (IOException e) {
-            Log.e("Groshie:", e.getMessage());
+        	// Memntira, o response body n tem mensagem nenhum lol
+            Log.e("Groshie:", "Err: " + e.getMessage());
         }
- 
+
         return ret;
     }
  

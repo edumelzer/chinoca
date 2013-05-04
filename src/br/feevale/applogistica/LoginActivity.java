@@ -24,27 +24,15 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-/**
- * Activity which displays a login screen to the user, offering registration as
- * well.
- */
 public class LoginActivity extends Activity {
-	/**
-	 * A dummy authentication store containing known user names and passwords.
-	 * TODO: remove after connecting to a real authentication system.
-	 */
+
 	private static final String[] DUMMY_CREDENTIALS = new String[] {
 			"eduardo:swordfish", "admin:swordfish" };
 
-	/**
-	 * The default email to populate the email field with.
-	 */
-	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
+	public static final String EXTRA_USUARIO = "com.example.android.authenticatordemo.extra.EMAIL";
 	public static final String URL_AUTH = "https://online.viamarte.com.br/projetoandroid/auth/";
+	public static final String URL_DADOS = "https://online.viamarte.com.br/projetoandroid/dadosentrega/";
 
-	/**
-	 * Keep track of the login task to ensure we can cancel it if requested.
-	 */
 	private UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
@@ -61,6 +49,7 @@ public class LoginActivity extends Activity {
 	// Retornados do Webservice
 	private int    idMotorista;
 	private String nomeMotorista;
+	private String dados;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +58,7 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_loging);
 
 		// Set up the login form.
-		mUsuario = getIntent().getStringExtra(EXTRA_EMAIL);
+		mUsuario = getIntent().getStringExtra(EXTRA_USUARIO);
 		mUsuarioView = (EditText) findViewById(R.id.usuario);
 		mUsuarioView.setText(mUsuario);
 
@@ -107,11 +96,6 @@ public class LoginActivity extends Activity {
 		return true;
 	}
 
-	/**
-	 * Attempts to sign in or register the account specified by the login form.
-	 * If there are form errors (invalid email, missing fields, etc.), the
-	 * errors are presented and no actual login attempt is made.
-	 */
 	public void attemptLogin() {
 		if (mAuthTask != null) {
 			return;
@@ -121,7 +105,6 @@ public class LoginActivity extends Activity {
 		mUsuarioView.setError(null);
 		mPasswordView.setError(null);
 
-		// Store values at the time of the login attempt.
 		mUsuario = mUsuarioView.getText().toString();
 		mPassword = mPasswordView.getText().toString();
 
@@ -151,12 +134,8 @@ public class LoginActivity extends Activity {
 		}
 
 		if (cancel) {
-			// There was an error; don't attempt login and focus the first
-			// form field with an error.
 			focusView.requestFocus();
 		} else {
-			// Show a progress spinner, and kick off a background task to
-			// perform the user login attempt.
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
 			mAuthTask = new UserLoginTask();
@@ -169,9 +148,7 @@ public class LoginActivity extends Activity {
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	private void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			int shortAnimTime = getResources().getInteger(
 					android.R.integer.config_shortAnimTime);
@@ -205,18 +182,12 @@ public class LoginActivity extends Activity {
 		}
 	}
 
-	/**
-	 * Represents an asynchronous login/registration task used to authenticate
-	 * the user.
-	 */
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 		@Override
 		protected Boolean doInBackground(Void... parameters) {
-			// TODO: attempt authentication against a network service.
-
+	
 			try {
-				// Simulate network access.
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 				String response = "";
 
 				WebService webService = new WebService(URL_AUTH);
@@ -236,8 +207,15 @@ public class LoginActivity extends Activity {
 					return false;
 				}
 
-				idMotorista      = Integer.parseInt(o.get("id_motorista").toString());
+				idMotorista   = Integer.parseInt(o.get("id_motorista").toString());
 				nomeMotorista = o.get("nome").toString();
+				
+				ConsumerService c = new ConsumerService();
+				webService = new WebService(URL_DADOS);
+				params = new HashMap<String, String>();
+			    params.put("id", String.valueOf(idMotorista ));
+			    dados = webService.webGet("", params);
+			    
 				
 			} catch (InterruptedException e) {
 				return false;
@@ -246,13 +224,14 @@ public class LoginActivity extends Activity {
 				e.printStackTrace();
 			}
 
-			for (String credential : DUMMY_CREDENTIALS) {
+			/* Teste conexão
+			 * for (String credential : DUMMY_CREDENTIALS) {
 				String[] pieces = credential.split(":");
 				if (pieces[0].equals(mUsuario)) {
 					// Account exists, return true if the password matches.
 					return pieces[1].equals(mPassword);
 				}
-			}
+			}*/
 
 			// TODO: register the new account here.
 			return true;
@@ -264,14 +243,15 @@ public class LoginActivity extends Activity {
 			showProgress(false);
 
 			if (success) {
-				//finish();
-				System.out.println("Deu true");
-				Intent i = new Intent( getBaseContext() , LoginViewActivity.class );
+				finish();
+				//Intent i = new Intent( getBaseContext() , LoginViewActivity.class );
+				Intent i = new Intent( getBaseContext() , EntregasActivity.class );
+				
 		    	i.putExtra("id", idMotorista);
 		    	i.putExtra("nome", nomeMotorista);
+		    	i.putExtra("dados", dados);
 		    	startActivity(i);
 			} else {
-				System.out.println("Deu false");
 				mPasswordView
 						.setError(getString(R.string.error_incorrect_password));
 				mPasswordView.requestFocus();

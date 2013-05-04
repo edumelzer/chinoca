@@ -47,13 +47,13 @@ public class ProdutosDao extends AbstractDao<Produtos, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'PRODUTOS' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'ID_ENTREGA' INTEGER," + // 1: id_entrega
+                "'ID_ENTREGA' INTEGER," +       // 1: id_entrega
                 "'DESCRICAO' TEXT NOT NULL ," + // 2: descricao
-                "'ESPECIE' TEXT," + // 3: especie
-                "'VALOR' INTEGER," + // 4: valor
-                "'SSCC' TEXT," + // 5: sscc
-                "'DH_LEITURA' INTEGER," + // 6: dh_leitura
-                "'DH_SINCRONISMO' TEXT);"); // 7: dh_sincronismo
+                "'ESPECIE' TEXT," +             // 3: especie
+                "'VALOR' INTEGER," +            // 4: valor
+                "'SSCC' TEXT," +                // 5: sscc
+                "'DH_LEITURA' INTEGER," +       // 6: dh_leitura
+                "'DH_SINCRONISMO' TEXT);");     // 7: dh_sincronismo
     }
 
     /** Drops the underlying database table. */

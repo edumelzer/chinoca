@@ -9,5 +9,9 @@
     <string name="id_motorista">Id Motorista</string>
     <string name="login_view">Visualizacao Login</string>
     <string name="logo">Logo do Chinoca</string>
+    
+    <string name="title_activity_entregas">EntregasActivity</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_produtos_entrega">ProdutosEntregaActivity</string>
 
 </resources>
