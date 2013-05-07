@@ -1,5 +1,7 @@
 package br.feevale.applogistica.database.orm;
 
+import java.sql.Date;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -46,6 +48,7 @@ public class ClientesDao extends AbstractDao<Clientes, Long> {
         super(config, daoSession);
     }
 
+    
     /** Creates the underlying database table. */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";

@@ -33,7 +33,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	private List<ClienteList> mClientesList;
 	private ListView mListaClientes;
     private SQLiteDatabase db;
-
+    private Clientes clientes;
     
     private EditText editText;
 
@@ -105,8 +105,24 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 				cliente.setCliente( o.get("razao_social").toString());
 				mClientesList.add(cliente);
 				
+				//Cria cliente
+				clientes = new Clientes(
+						Long.getLong(o.get("id_cliente").toString())
+						,o.get("razao_social").toString()
+						,o.get("fantasia").toString()
+						,o.get("logradouro").toString()
+						,Integer.parseInt(o.get("numero").toString())
+						,o.get("complemento").toString()
+						,o.get("bairro").toString()
+						,o.get("cidade").toString()
+						,o.get("uf").toString()
+						,o.get("cep").toString()
+						,Long.getLong(o.get("latitude").toString())
+						,Long.getLong(o.get("longitude").toString())
+						);
+				
 				//A tabela precisa ser um cliente para ser inserida...
-				//clientesDao.insert(cliente.getCliente());
+				clientesDao.insertOrReplace(clientes);
 				
 				System.out.println(o.get("placa").toString());
 			} catch (JSONException e) {
