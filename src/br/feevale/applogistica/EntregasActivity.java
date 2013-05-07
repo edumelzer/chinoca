@@ -11,6 +11,7 @@ import br.feevale.applogistica.database.orm.Clientes;
 import br.feevale.applogistica.database.orm.ClientesDao;
 import br.feevale.applogistica.database.orm.DaoMaster;
 import br.feevale.applogistica.database.orm.DaoSession;
+import br.feevale.applogistica.database.orm.Entregas;
 import br.feevale.applogistica.database.orm.EntregasDao;
 import br.feevale.applogistica.database.orm.DaoMaster.DevOpenHelper;
 import br.feevale.applogistica.webservice.ConsumerService;
@@ -33,7 +34,8 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	private List<ClienteList> mClientesList;
 	private ListView mListaClientes;
     private SQLiteDatabase db;
-    private Clientes clientes;
+    private Clientes clienteDb;
+    private Entregas entregaDb;
     
     private EditText editText;
 
@@ -106,7 +108,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 				mClientesList.add(cliente);
 				
 				//Cria cliente
-				clientes = new Clientes(
+				clienteDb = new Clientes(
 						Long.getLong(o.get("id_cliente").toString())
 						,o.get("razao_social").toString()
 						,o.get("fantasia").toString()
@@ -122,7 +124,26 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 						);
 				
 				//A tabela precisa ser um cliente para ser inserida...
-				clientesDao.insertOrReplace(clientes);
+				clientesDao.insertOrReplace(clienteDb);
+				
+				//Criar entregas
+				entregaDb = new Entregas(
+						 Long.getLong(o.get("id_entrega").toString())
+						,Integer.parseInt(o.get("id_cliente").toString())
+						,Integer.parseInt(o.get("id_motorista").toString())
+						,Integer.parseInt(o.get("ordem").toString())
+						,Integer.parseInt(o.get("volumes").toString())
+						,o.get("dh_maxima").toString()
+						,o.get("gln").toString()
+						,o.get("melhor_rota").toString()
+						,o.get("nome_contato").toString()
+						,o.get("telefone").toString()
+						,""
+						,""
+						,""
+						);
+				
+				Long id, int id_cliente, int id_motorista, Integer ordem, java.util.Date dh_maxima, String gln, String melhor_rota, Integer volumes, String nome_contato, String telefone, String dh_entrega, String imagem_documento, String dh_sincronismo
 				
 				System.out.println(o.get("placa").toString());
 			} catch (JSONException e) {

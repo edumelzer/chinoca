@@ -24,13 +24,13 @@ public class EntregasDao extends AbstractDao<Entregas, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Id_cliente = new Property(1, int.class, "id_cliente", false, "ID_CLIENTE");
-        public final static Property Id_motorista = new Property(2, int.class, "id_motorista", false, "ID_MOTORISTA");
+        public final static Property Id_cliente = new Property(1, Long.class, "id_cliente", false, "ID_CLIENTE");
+        public final static Property Id_motorista = new Property(2, Long.class, "id_motorista", false, "ID_MOTORISTA");
         public final static Property Ordem = new Property(3, Integer.class, "ordem", false, "ORDEM");
-        public final static Property Dh_maxima = new Property(4, java.util.Date.class, "dh_maxima", false, "DH_MAXIMA");
-        public final static Property Gln = new Property(5, String.class, "gln", false, "GLN");
-        public final static Property Melhor_rota = new Property(6, String.class, "melhor_rota", false, "MELHOR_ROTA");
-        public final static Property Volumes = new Property(7, Integer.class, "volumes", false, "VOLUMES");
+        public final static Property Volumes = new Property(4, Integer.class, "volumes", false, "VOLUMES");
+        public final static Property Dh_maxima = new Property(5, String.class, "dh_maxima", false, "DH_MAXIMA");
+        public final static Property Gln = new Property(6, String.class, "gln", false, "GLN");
+        public final static Property Melhor_rota = new Property(7, String.class, "melhor_rota", false, "MELHOR_ROTA");
         public final static Property Nome_contato = new Property(8, String.class, "nome_contato", false, "NOME_CONTATO");
         public final static Property Telefone = new Property(9, String.class, "telefone", false, "TELEFONE");
         public final static Property Dh_entrega = new Property(10, String.class, "dh_entrega", false, "DH_ENTREGA");
@@ -52,13 +52,13 @@ public class EntregasDao extends AbstractDao<Entregas, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'ENTREGAS' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'ID_CLIENTE' INTEGER NOT NULL ," + // 1: id_cliente
-                "'ID_MOTORISTA' INTEGER NOT NULL ," + // 2: id_motorista
+                "'ID_CLIENTE' INTEGER," + // 1: id_cliente
+                "'ID_MOTORISTA' INTEGER," + // 2: id_motorista
                 "'ORDEM' INTEGER," + // 3: ordem
-                "'DH_MAXIMA' INTEGER," + // 4: dh_maxima
-                "'GLN' TEXT," + // 5: gln
-                "'MELHOR_ROTA' TEXT," + // 6: melhor_rota
-                "'VOLUMES' INTEGER," + // 7: volumes
+                "'VOLUMES' INTEGER," + // 4: volumes
+                "'DH_MAXIMA' TEXT," + // 5: dh_maxima
+                "'GLN' TEXT," + // 6: gln
+                "'MELHOR_ROTA' TEXT," + // 7: melhor_rota
                 "'NOME_CONTATO' TEXT," + // 8: nome_contato
                 "'TELEFONE' TEXT," + // 9: telefone
                 "'DH_ENTREGA' TEXT," + // 10: dh_entrega
@@ -81,32 +81,40 @@ public class EntregasDao extends AbstractDao<Entregas, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getId_cliente());
-        stmt.bindLong(3, entity.getId_motorista());
+ 
+        Long id_cliente = entity.getId_cliente();
+        if (id_cliente != null) {
+            stmt.bindLong(2, id_cliente);
+        }
+ 
+        Long id_motorista = entity.getId_motorista();
+        if (id_motorista != null) {
+            stmt.bindLong(3, id_motorista);
+        }
  
         Integer ordem = entity.getOrdem();
         if (ordem != null) {
             stmt.bindLong(4, ordem);
         }
  
-        java.util.Date dh_maxima = entity.getDh_maxima();
+        Integer volumes = entity.getVolumes();
+        if (volumes != null) {
+            stmt.bindLong(5, volumes);
+        }
+ 
+        String dh_maxima = entity.getDh_maxima();
         if (dh_maxima != null) {
-            stmt.bindLong(5, dh_maxima.getTime());
+            stmt.bindString(6, dh_maxima);
         }
  
         String gln = entity.getGln();
         if (gln != null) {
-            stmt.bindString(6, gln);
+            stmt.bindString(7, gln);
         }
  
         String melhor_rota = entity.getMelhor_rota();
         if (melhor_rota != null) {
-            stmt.bindString(7, melhor_rota);
-        }
- 
-        Integer volumes = entity.getVolumes();
-        if (volumes != null) {
-            stmt.bindLong(8, volumes);
+            stmt.bindString(8, melhor_rota);
         }
  
         String nome_contato = entity.getNome_contato();
@@ -146,13 +154,13 @@ public class EntregasDao extends AbstractDao<Entregas, Long> {
     public Entregas readEntity(Cursor cursor, int offset) {
         Entregas entity = new Entregas( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getInt(offset + 1), // id_cliente
-            cursor.getInt(offset + 2), // id_motorista
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // id_cliente
+            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // id_motorista
             cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // ordem
-            cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)), // dh_maxima
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // gln
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // melhor_rota
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // volumes
+            cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // volumes
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // dh_maxima
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // gln
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // melhor_rota
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // nome_contato
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // telefone
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // dh_entrega
@@ -166,13 +174,13 @@ public class EntregasDao extends AbstractDao<Entregas, Long> {
     @Override
     public void readEntity(Cursor cursor, Entregas entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setId_cliente(cursor.getInt(offset + 1));
-        entity.setId_motorista(cursor.getInt(offset + 2));
+        entity.setId_cliente(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setId_motorista(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
         entity.setOrdem(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
-        entity.setDh_maxima(cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)));
-        entity.setGln(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setMelhor_rota(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setVolumes(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
+        entity.setVolumes(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
+        entity.setDh_maxima(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setGln(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setMelhor_rota(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setNome_contato(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setTelefone(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setDh_entrega(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));

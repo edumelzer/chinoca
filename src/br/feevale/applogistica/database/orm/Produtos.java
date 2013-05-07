@@ -8,12 +8,11 @@ public class Produtos {
 
     private Long id;
     private Integer id_entrega;
-    /** Not-null value. */
     private String descricao;
     private String especie;
     private Long valor;
     private String sscc;
-    private java.util.Date dh_leitura;
+    private String dh_leitura;
     private String dh_sincronismo;
 
     public Produtos() {
@@ -23,7 +22,7 @@ public class Produtos {
         this.id = id;
     }
 
-    public Produtos(Long id, Integer id_entrega, String descricao, String especie, Long valor, String sscc, java.util.Date dh_leitura, String dh_sincronismo) {
+    public Produtos(Long id, Integer id_entrega, String descricao, String especie, Long valor, String sscc, String dh_leitura, String dh_sincronismo) {
         this.id = id;
         this.id_entrega = id_entrega;
         this.descricao = descricao;
@@ -50,12 +49,10 @@ public class Produtos {
         this.id_entrega = id_entrega;
     }
 
-    /** Not-null value. */
     public String getDescricao() {
         return descricao;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
@@ -84,11 +81,11 @@ public class Produtos {
         this.sscc = sscc;
     }
 
-    public java.util.Date getDh_leitura() {
+    public String getDh_leitura() {
         return dh_leitura;
     }
 
-    public void setDh_leitura(java.util.Date dh_leitura) {
+    public void setDh_leitura(String dh_leitura) {
         this.dh_leitura = dh_leitura;
     }
 

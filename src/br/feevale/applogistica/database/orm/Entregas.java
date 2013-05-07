@@ -7,13 +7,13 @@ package br.feevale.applogistica.database.orm;
 public class Entregas {
 
     private Long id;
-    private int id_cliente;
-    private int id_motorista;
+    private Long id_cliente;
+    private Long id_motorista;
     private Integer ordem;
-    private java.util.Date dh_maxima;
+    private Integer volumes;
+    private String dh_maxima;
     private String gln;
     private String melhor_rota;
-    private Integer volumes;
     private String nome_contato;
     private String telefone;
     private String dh_entrega;
@@ -27,15 +27,15 @@ public class Entregas {
         this.id = id;
     }
 
-    public Entregas(Long id, int id_cliente, int id_motorista, Integer ordem, java.util.Date dh_maxima, String gln, String melhor_rota, Integer volumes, String nome_contato, String telefone, String dh_entrega, String imagem_documento, String dh_sincronismo) {
+    public Entregas(Long id, Long id_cliente, Long id_motorista, Integer ordem, Integer volumes, String dh_maxima, String gln, String melhor_rota, String nome_contato, String telefone, String dh_entrega, String imagem_documento, String dh_sincronismo) {
         this.id = id;
         this.id_cliente = id_cliente;
         this.id_motorista = id_motorista;
         this.ordem = ordem;
+        this.volumes = volumes;
         this.dh_maxima = dh_maxima;
         this.gln = gln;
         this.melhor_rota = melhor_rota;
-        this.volumes = volumes;
         this.nome_contato = nome_contato;
         this.telefone = telefone;
         this.dh_entrega = dh_entrega;
@@ -51,19 +51,19 @@ public class Entregas {
         this.id = id;
     }
 
-    public int getId_cliente() {
+    public Long getId_cliente() {
         return id_cliente;
     }
 
-    public void setId_cliente(int id_cliente) {
+    public void setId_cliente(Long id_cliente) {
         this.id_cliente = id_cliente;
     }
 
-    public int getId_motorista() {
+    public Long getId_motorista() {
         return id_motorista;
     }
 
-    public void setId_motorista(int id_motorista) {
+    public void setId_motorista(Long id_motorista) {
         this.id_motorista = id_motorista;
     }
 
@@ -75,11 +75,19 @@ public class Entregas {
         this.ordem = ordem;
     }
 
-    public java.util.Date getDh_maxima() {
+    public Integer getVolumes() {
+        return volumes;
+    }
+
+    public void setVolumes(Integer volumes) {
+        this.volumes = volumes;
+    }
+
+    public String getDh_maxima() {
         return dh_maxima;
     }
 
-    public void setDh_maxima(java.util.Date dh_maxima) {
+    public void setDh_maxima(String dh_maxima) {
         this.dh_maxima = dh_maxima;
     }
 
@@ -97,14 +105,6 @@ public class Entregas {
 
     public void setMelhor_rota(String melhor_rota) {
         this.melhor_rota = melhor_rota;
-    }
-
-    public Integer getVolumes() {
-        return volumes;
-    }
-
-    public void setVolumes(Integer volumes) {
-        this.volumes = volumes;
     }
 
     public String getNome_contato() {

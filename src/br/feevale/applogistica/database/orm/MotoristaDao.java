@@ -25,7 +25,8 @@ public class MotoristaDao extends AbstractDao<Motorista, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Nome = new Property(1, String.class, "nome", false, "NOME");
-        public final static Property Dh_sincronismo = new Property(2, java.util.Date.class, "dh_sincronismo", false, "DH_SINCRONISMO");
+        public final static Property Placa = new Property(2, String.class, "placa", false, "PLACA");
+        public final static Property Dh_sincronismo = new Property(3, String.class, "dh_sincronismo", false, "DH_SINCRONISMO");
     };
 
 
@@ -42,8 +43,9 @@ public class MotoristaDao extends AbstractDao<Motorista, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MOTORISTA' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'NOME' TEXT NOT NULL ," + // 1: nome
-                "'DH_SINCRONISMO' INTEGER);"); // 2: dh_sincronismo
+                "'NOME' TEXT," + // 1: nome
+                "'PLACA' TEXT," + // 2: placa
+                "'DH_SINCRONISMO' TEXT);"); // 3: dh_sincronismo
     }
 
     /** Drops the underlying database table. */
@@ -61,11 +63,20 @@ public class MotoristaDao extends AbstractDao<Motorista, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindString(2, entity.getNome());
  
-        java.util.Date dh_sincronismo = entity.getDh_sincronismo();
+        String nome = entity.getNome();
+        if (nome != null) {
+            stmt.bindString(2, nome);
+        }
+ 
+        String placa = entity.getPlaca();
+        if (placa != null) {
+            stmt.bindString(3, placa);
+        }
+ 
+        String dh_sincronismo = entity.getDh_sincronismo();
         if (dh_sincronismo != null) {
-            stmt.bindLong(3, dh_sincronismo.getTime());
+            stmt.bindString(4, dh_sincronismo);
         }
     }
 
@@ -80,8 +91,9 @@ public class MotoristaDao extends AbstractDao<Motorista, Long> {
     public Motorista readEntity(Cursor cursor, int offset) {
         Motorista entity = new Motorista( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getString(offset + 1), // nome
-            cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)) // dh_sincronismo
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // nome
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // placa
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // dh_sincronismo
         );
         return entity;
     }
@@ -90,8 +102,9 @@ public class MotoristaDao extends AbstractDao<Motorista, Long> {
     @Override
     public void readEntity(Cursor cursor, Motorista entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setNome(cursor.getString(offset + 1));
-        entity.setDh_sincronismo(cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)));
+        entity.setNome(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setPlaca(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setDh_sincronismo(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     /** @inheritdoc */

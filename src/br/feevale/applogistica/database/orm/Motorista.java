@@ -7,9 +7,9 @@ package br.feevale.applogistica.database.orm;
 public class Motorista {
 
     private Long id;
-    /** Not-null value. */
     private String nome;
-    private java.util.Date dh_sincronismo;
+    private String placa;
+    private String dh_sincronismo;
 
     public Motorista() {
     }
@@ -18,9 +18,10 @@ public class Motorista {
         this.id = id;
     }
 
-    public Motorista(Long id, String nome, java.util.Date dh_sincronismo) {
+    public Motorista(Long id, String nome, String placa, String dh_sincronismo) {
         this.id = id;
         this.nome = nome;
+        this.placa = placa;
         this.dh_sincronismo = dh_sincronismo;
     }
 
@@ -32,21 +33,27 @@ public class Motorista {
         this.id = id;
     }
 
-    /** Not-null value. */
     public String getNome() {
         return nome;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setNome(String nome) {
         this.nome = nome;
     }
 
-    public java.util.Date getDh_sincronismo() {
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    public String getDh_sincronismo() {
         return dh_sincronismo;
     }
 
-    public void setDh_sincronismo(java.util.Date dh_sincronismo) {
+    public void setDh_sincronismo(String dh_sincronismo) {
         this.dh_sincronismo = dh_sincronismo;
     }
 

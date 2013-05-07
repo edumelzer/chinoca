@@ -29,7 +29,7 @@ public class ProdutosDao extends AbstractDao<Produtos, Long> {
         public final static Property Especie = new Property(3, String.class, "especie", false, "ESPECIE");
         public final static Property Valor = new Property(4, Long.class, "valor", false, "VALOR");
         public final static Property Sscc = new Property(5, String.class, "sscc", false, "SSCC");
-        public final static Property Dh_leitura = new Property(6, java.util.Date.class, "dh_leitura", false, "DH_LEITURA");
+        public final static Property Dh_leitura = new Property(6, String.class, "dh_leitura", false, "DH_LEITURA");
         public final static Property Dh_sincronismo = new Property(7, String.class, "dh_sincronismo", false, "DH_SINCRONISMO");
     };
 
@@ -47,13 +47,13 @@ public class ProdutosDao extends AbstractDao<Produtos, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'PRODUTOS' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'ID_ENTREGA' INTEGER," +       // 1: id_entrega
-                "'DESCRICAO' TEXT NOT NULL ," + // 2: descricao
-                "'ESPECIE' TEXT," +             // 3: especie
-                "'VALOR' INTEGER," +            // 4: valor
-                "'SSCC' TEXT," +                // 5: sscc
-                "'DH_LEITURA' INTEGER," +       // 6: dh_leitura
-                "'DH_SINCRONISMO' TEXT);");     // 7: dh_sincronismo
+                "'ID_ENTREGA' INTEGER," + // 1: id_entrega
+                "'DESCRICAO' TEXT," + // 2: descricao
+                "'ESPECIE' TEXT," + // 3: especie
+                "'VALOR' INTEGER," + // 4: valor
+                "'SSCC' TEXT," + // 5: sscc
+                "'DH_LEITURA' TEXT," + // 6: dh_leitura
+                "'DH_SINCRONISMO' TEXT);"); // 7: dh_sincronismo
     }
 
     /** Drops the underlying database table. */
@@ -76,7 +76,11 @@ public class ProdutosDao extends AbstractDao<Produtos, Long> {
         if (id_entrega != null) {
             stmt.bindLong(2, id_entrega);
         }
-        stmt.bindString(3, entity.getDescricao());
+ 
+        String descricao = entity.getDescricao();
+        if (descricao != null) {
+            stmt.bindString(3, descricao);
+        }
  
         String especie = entity.getEspecie();
         if (especie != null) {
@@ -93,9 +97,9 @@ public class ProdutosDao extends AbstractDao<Produtos, Long> {
             stmt.bindString(6, sscc);
         }
  
-        java.util.Date dh_leitura = entity.getDh_leitura();
+        String dh_leitura = entity.getDh_leitura();
         if (dh_leitura != null) {
-            stmt.bindLong(7, dh_leitura.getTime());
+            stmt.bindString(7, dh_leitura);
         }
  
         String dh_sincronismo = entity.getDh_sincronismo();
@@ -116,11 +120,11 @@ public class ProdutosDao extends AbstractDao<Produtos, Long> {
         Produtos entity = new Produtos( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1), // id_entrega
-            cursor.getString(offset + 2), // descricao
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // descricao
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // especie
             cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // valor
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // sscc
-            cursor.isNull(offset + 6) ? null : new java.util.Date(cursor.getLong(offset + 6)), // dh_leitura
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // dh_leitura
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // dh_sincronismo
         );
         return entity;
@@ -131,11 +135,11 @@ public class ProdutosDao extends AbstractDao<Produtos, Long> {
     public void readEntity(Cursor cursor, Produtos entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setId_entrega(cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1));
-        entity.setDescricao(cursor.getString(offset + 2));
+        entity.setDescricao(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setEspecie(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setValor(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
         entity.setSscc(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setDh_leitura(cursor.isNull(offset + 6) ? null : new java.util.Date(cursor.getLong(offset + 6)));
+        entity.setDh_leitura(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setDh_sincronismo(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
