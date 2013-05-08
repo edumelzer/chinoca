@@ -1,6 +1,10 @@
 package br.feevale.applogistica;
 
+import java.sql.Date;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +17,8 @@ import br.feevale.applogistica.database.orm.DaoMaster;
 import br.feevale.applogistica.database.orm.DaoSession;
 import br.feevale.applogistica.database.orm.Entregas;
 import br.feevale.applogistica.database.orm.EntregasDao;
+import br.feevale.applogistica.database.orm.MotoristaDao;
+import br.feevale.applogistica.database.orm.Motorista;
 import br.feevale.applogistica.database.orm.DaoMaster.DevOpenHelper;
 import br.feevale.applogistica.webservice.ConsumerService;
 
@@ -36,6 +42,9 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
     private SQLiteDatabase db;
     private Clientes clienteDb;
     private Entregas entregaDb;
+    private Motorista motistaDb;
+    private Long idMotorista;
+    private String nomeMotorista;
     
     private EditText editText;
 
@@ -43,6 +52,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
     private DaoSession daoSession;
     private EntregasDao entregasDao;
     private ClientesDao  clientesDao;
+    private MotoristaDao  motoristasDao;
 
     private Cursor cursor;
 
@@ -61,6 +71,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
         daoSession = daoMaster.newSession();
         entregasDao = daoSession.getEntregasDao();
         clientesDao = daoSession.getClientesDao();
+        motoristasDao = daoSession.getMotoristaDao();
         
         /* Testes Eduardo;
          * String idColumn = ProdutosDao.Properties.Id.columnName;
@@ -94,10 +105,31 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
         
         String dados = extras.getString("dados").replaceAll("\\[|\\]", "");
         String[] strs = dados.split("(?<=\\},)(?=\\{)");
+        
+        boolean firstLoop = true;
+        
 		for (String s : strs) {
 		    //System.out.println(s);     
 			try {
 				JSONObject o = new JSONObject(s);
+				
+				//Insere motorista
+				if(firstLoop){
+			        idMotorista = Long.parseLong(String.valueOf((extras.getInt("id"))));
+			        nomeMotorista = String.valueOf((extras.getInt("nome")));
+			        
+			        Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+			        //String s = formatter.format(date);
+			        //System.out.println("Data atual:"+formatter.format(Calendar.getInstance().getTime()));
+			        motistaDb = new Motorista(idMotorista, nomeMotorista, o.get("placa").toString(), formatter.format(Calendar.getInstance().getTime()) );
+			        
+			        //
+			        firstLoop = false;
+			        //Long id, String nome, String placa, String dh_sincronismo
+			        motoristasDao.insertWithoutSettingPk(motistaDb);
+				}
+				
+				//Popula Adapter
 				cliente = new ClienteList();
 				cliente.setFantasia(o.get("fantasia").toString());
 				cliente.setBairro(  o.get("bairro").toString());
@@ -107,9 +139,15 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 				cliente.setCliente( o.get("razao_social").toString());
 				mClientesList.add(cliente);
 				
+				//
+				Long idCliente = Long.parseLong(o.get("id_cliente").toString());
+				
+				System.out.println("id cliente Long:"+idCliente);
+				System.out.println("id cliente String:"+o.get("id_cliente").toString());
+				
 				//Cria cliente
 				clienteDb = new Clientes(
-						Long.getLong(o.get("id_cliente").toString())
+						idCliente
 						,o.get("razao_social").toString()
 						,o.get("fantasia").toString()
 						,o.get("logradouro").toString()
@@ -119,18 +157,22 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 						,o.get("cidade").toString()
 						,o.get("uf").toString()
 						,o.get("cep").toString()
-						,Long.getLong(o.get("latitude").toString())
-						,Long.getLong(o.get("longitude").toString())
+						, Long.getLong(o.get("latitude").toString())
+						, Long.getLong(o.get("longitude").toString())
 						);
 				
 				//A tabela precisa ser um cliente para ser inserida...
-				clientesDao.insertOrReplace(clienteDb);
+				Clientes clienteTest = clientesDao.load(idCliente);
+				if(clienteTest.getId() != idCliente){
+					System.out.println("Nome do cliente:"+clienteTest.getRazao_social());
+					clientesDao.insertOrReplace(clienteDb);
+				}
 				
 				//Criar entregas
 				entregaDb = new Entregas(
-						 Long.getLong(o.get("id_entrega").toString())
-						,Integer.parseInt(o.get("id_cliente").toString())
-						,Integer.parseInt(o.get("id_motorista").toString())
+						 Long.parseLong(o.get("id_entrega").toString())
+						,idCliente
+						,idMotorista
 						,Integer.parseInt(o.get("ordem").toString())
 						,Integer.parseInt(o.get("volumes").toString())
 						,o.get("dh_maxima").toString()
@@ -143,7 +185,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 						,""
 						);
 				
-				Long id, int id_cliente, int id_motorista, Integer ordem, java.util.Date dh_maxima, String gln, String melhor_rota, Integer volumes, String nome_contato, String telefone, String dh_entrega, String imagem_documento, String dh_sincronismo
+				entregasDao.insertOrReplace(entregaDb);
 				
 				System.out.println(o.get("placa").toString());
 			} catch (JSONException e) {

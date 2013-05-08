@@ -210,6 +210,8 @@ public class LoginActivity extends Activity {
 				idMotorista   = Integer.parseInt(o.get("id_motorista").toString());
 				nomeMotorista = o.get("nome").toString();
 				
+				
+				
 				ConsumerService c = new ConsumerService();
 				webService = new WebService(URL_DADOS);
 				params = new HashMap<String, String>();
