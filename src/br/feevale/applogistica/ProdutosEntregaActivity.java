@@ -9,8 +9,8 @@ import br.feevale.applogistica.adapter.ProdutoAdapter;
 import br.feevale.applogistica.database.orm.DaoMaster;
 import br.feevale.applogistica.database.orm.DaoMaster.DevOpenHelper;
 import br.feevale.applogistica.database.orm.DaoSession;
-import br.feevale.applogistica.database.orm.Produtos;
-import br.feevale.applogistica.database.orm.ProdutosDao;
+import br.feevale.applogistica.database.orm.Produto;
+import br.feevale.applogistica.database.orm.ProdutoDao;
 import br.feevale.applogistica.webservice.WebService;
 
 import android.os.Bundle;
@@ -28,7 +28,7 @@ import android.widget.Toast;
 public class ProdutosEntregaActivity extends Activity implements OnItemClickListener{
 	
 	private ListView mLvProdutosEntrega;
-	private List<Produtos> mListaProdutos;
+	private List<Produto> mListaProdutos;
     private SQLiteDatabase db;
 
     public static final String URL_DADOS = "https://online.viamarte.com.br/projetoandroid/dadosentrega/";
@@ -37,7 +37,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 
     private DaoMaster daoMaster;
     private DaoSession daoSession;
-    private ProdutosDao produtoDao;
+    private ProdutoDao produtoDao;
 
     private Cursor cursor;
 	
@@ -56,7 +56,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		db = helper.getWritableDatabase();
         daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
-        produtoDao = daoSession.getProdutosDao();
+        produtoDao = daoSession.getProdutoDao();
         
         /* Testes Eduardo;
          * String idColumn = ProdutosDao.Properties.Id.columnName;
@@ -75,7 +75,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 
         response = webService.webGet("", params);
         
-		mListaProdutos = new ArrayList<Produtos>();
+		mListaProdutos = new ArrayList<Produto>();
 
 		String str = "{id:\"123\",name:\"myName\"}{id:\"456\",name:\"yetanotherName\"}{id:\"456\",name:\"anotherName\"}";
 		String[] strs = str.split("(?<=\\})(?=\\{)");
@@ -84,19 +84,19 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		}
 		
 		
-		Produtos prod = new Produtos();
+		Produto prod = new Produto();
 		prod.setDescricao("TELEVISAO SAMSUNG 32 POLEG.");
 		mListaProdutos.add(prod);
 		
-		prod = new Produtos();
+		prod = new Produto();
 		prod.setDescricao("NOTEBOOK POSITIVO");
 		mListaProdutos.add(prod);
 		
-		prod = new Produtos();
+		prod = new Produto();
 		prod.setDescricao("TABLET SAMSUNG NOTE");
 		mListaProdutos.add(prod);
 		
-		prod = new Produtos();
+		prod = new Produto();
 		prod.setDescricao("MESA PRIOR");
 		mListaProdutos.add(prod);
 		

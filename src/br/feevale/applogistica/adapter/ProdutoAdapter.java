@@ -3,7 +3,7 @@ package br.feevale.applogistica.adapter;
 import java.util.List;
 
 import br.feevale.applogistica.R;
-import br.feevale.applogistica.database.orm.Produtos;
+import br.feevale.applogistica.database.orm.Produto;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,9 +15,9 @@ import android.widget.TextView;
 
 public class ProdutoAdapter extends BaseAdapter {
 	private Context mContext;
-	private List<Produtos> mListaProdutos;
+	private List<Produto> mListaProdutos;
 	
-	public ProdutoAdapter(Context context, List<Produtos> listaProdutos){
+	public ProdutoAdapter(Context context, List<Produto> listaProdutos){
 		this.mContext = context;
 		this.mListaProdutos = listaProdutos;
 	}

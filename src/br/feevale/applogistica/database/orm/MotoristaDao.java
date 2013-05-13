@@ -24,9 +24,10 @@ public class MotoristaDao extends AbstractDao<Motorista, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Nome = new Property(1, String.class, "nome", false, "NOME");
-        public final static Property Placa = new Property(2, String.class, "placa", false, "PLACA");
-        public final static Property Dh_sincronismo = new Property(3, String.class, "dh_sincronismo", false, "DH_SINCRONISMO");
+        public final static Property Id_web = new Property(1, Long.class, "id_web", false, "ID_WEB");
+        public final static Property Nome = new Property(2, String.class, "nome", false, "NOME");
+        public final static Property Placa = new Property(3, String.class, "placa", false, "PLACA");
+        public final static Property Dh_sincronismo = new Property(4, String.class, "dh_sincronismo", false, "DH_SINCRONISMO");
     };
 
 
@@ -43,9 +44,10 @@ public class MotoristaDao extends AbstractDao<Motorista, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MOTORISTA' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'NOME' TEXT," + // 1: nome
-                "'PLACA' TEXT," + // 2: placa
-                "'DH_SINCRONISMO' TEXT);"); // 3: dh_sincronismo
+                "'ID_WEB' INTEGER," + // 1: id_web
+                "'NOME' TEXT," + // 2: nome
+                "'PLACA' TEXT," + // 3: placa
+                "'DH_SINCRONISMO' TEXT);"); // 4: dh_sincronismo
     }
 
     /** Drops the underlying database table. */
@@ -64,19 +66,24 @@ public class MotoristaDao extends AbstractDao<Motorista, Long> {
             stmt.bindLong(1, id);
         }
  
+        Long id_web = entity.getId_web();
+        if (id_web != null) {
+            stmt.bindLong(2, id_web);
+        }
+ 
         String nome = entity.getNome();
         if (nome != null) {
-            stmt.bindString(2, nome);
+            stmt.bindString(3, nome);
         }
  
         String placa = entity.getPlaca();
         if (placa != null) {
-            stmt.bindString(3, placa);
+            stmt.bindString(4, placa);
         }
  
         String dh_sincronismo = entity.getDh_sincronismo();
         if (dh_sincronismo != null) {
-            stmt.bindString(4, dh_sincronismo);
+            stmt.bindString(5, dh_sincronismo);
         }
     }
 
@@ -91,9 +98,10 @@ public class MotoristaDao extends AbstractDao<Motorista, Long> {
     public Motorista readEntity(Cursor cursor, int offset) {
         Motorista entity = new Motorista( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // nome
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // placa
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // dh_sincronismo
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // id_web
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // nome
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // placa
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // dh_sincronismo
         );
         return entity;
     }
@@ -102,9 +110,10 @@ public class MotoristaDao extends AbstractDao<Motorista, Long> {
     @Override
     public void readEntity(Cursor cursor, Motorista entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setNome(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setPlaca(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setDh_sincronismo(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setId_web(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setNome(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setPlaca(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setDh_sincronismo(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
      }
     
     /** @inheritdoc */

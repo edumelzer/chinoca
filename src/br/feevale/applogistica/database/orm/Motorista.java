@@ -7,6 +7,7 @@ package br.feevale.applogistica.database.orm;
 public class Motorista {
 
     private Long id;
+    private Long id_web;
     private String nome;
     private String placa;
     private String dh_sincronismo;
@@ -18,8 +19,9 @@ public class Motorista {
         this.id = id;
     }
 
-    public Motorista(Long id, String nome, String placa, String dh_sincronismo) {
+    public Motorista(Long id, Long id_web, String nome, String placa, String dh_sincronismo) {
         this.id = id;
+        this.id_web = id_web;
         this.nome = nome;
         this.placa = placa;
         this.dh_sincronismo = dh_sincronismo;
@@ -31,6 +33,14 @@ public class Motorista {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getId_web() {
+        return id_web;
+    }
+
+    public void setId_web(Long id_web) {
+        this.id_web = id_web;
     }
 
     public String getNome() {

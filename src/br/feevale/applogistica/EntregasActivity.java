@@ -11,12 +11,12 @@ import org.json.JSONObject;
 
 import br.feevale.applogistica.adapter.ClienteList;
 import br.feevale.applogistica.adapter.EntregasAdapter;
-import br.feevale.applogistica.database.orm.Clientes;
-import br.feevale.applogistica.database.orm.ClientesDao;
+import br.feevale.applogistica.database.orm.Cliente;
+import br.feevale.applogistica.database.orm.ClienteDao;
 import br.feevale.applogistica.database.orm.DaoMaster;
 import br.feevale.applogistica.database.orm.DaoSession;
-import br.feevale.applogistica.database.orm.Entregas;
-import br.feevale.applogistica.database.orm.EntregasDao;
+import br.feevale.applogistica.database.orm.Entrega;
+import br.feevale.applogistica.database.orm.EntregaDao;
 import br.feevale.applogistica.database.orm.MotoristaDao;
 import br.feevale.applogistica.database.orm.Motorista;
 import br.feevale.applogistica.database.orm.DaoMaster.DevOpenHelper;
@@ -40,8 +40,8 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	private List<ClienteList> mClientesList;
 	private ListView mListaClientes;
     private SQLiteDatabase db;
-    private Clientes clienteDb;
-    private Entregas entregaDb;
+    private Cliente clienteDb;
+    private Entrega entregaDb;
     private Motorista motistaDb;
     private Long idMotorista;
     private String nomeMotorista;
@@ -50,8 +50,8 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 
     private DaoMaster daoMaster;
     private DaoSession daoSession;
-    private EntregasDao entregasDao;
-    private ClientesDao  clientesDao;
+    private EntregaDao entregasDao;
+    private ClienteDao  clientesDao;
     private MotoristaDao  motoristasDao;
 
     private Cursor cursor;
@@ -69,8 +69,8 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		db = helper.getWritableDatabase();
         daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
-        entregasDao = daoSession.getEntregasDao();
-        clientesDao = daoSession.getClientesDao();
+        entregasDao = daoSession.getEntregaDao();
+        clientesDao = daoSession.getClienteDao();
         motoristasDao = daoSession.getMotoristaDao();
         
         /* Testes Eduardo;
