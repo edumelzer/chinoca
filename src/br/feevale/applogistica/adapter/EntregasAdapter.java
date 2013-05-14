@@ -42,7 +42,7 @@ public class EntregasAdapter extends BaseAdapter {
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
-		return position;
+		return mListEntregas.get(position).getIdEntrega();
 	}
 
 	@Override

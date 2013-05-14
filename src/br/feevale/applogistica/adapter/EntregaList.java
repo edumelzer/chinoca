@@ -14,6 +14,7 @@ public class EntregaList {
 	private String Dh_maxima;
 	private String Dh_entrega;
 	private String Dh_sincronismo;
+	private Long idEntrega;
 	
 	public EntregaList(){
 		
@@ -21,7 +22,7 @@ public class EntregaList {
 	
 	public EntregaList(String fantasia, String endereco, int numero,
 			String bairro, String cidade, String cliente, String melhor_rota,
-			String dh_maxima, String dh_entregue,  String dh_sincronismo) {
+			String dh_maxima, String dh_entregue,  String dh_sincronismo, Long id_entrega) {
 		Fantasia = fantasia;
 		Endereco = endereco;
 		Numero = numero;
@@ -32,6 +33,7 @@ public class EntregaList {
 		Dh_maxima = dh_maxima;
 		Dh_entrega = dh_entregue;
 		Dh_sincronismo = dh_sincronismo;
+		idEntrega = id_entrega;
 	}
 	
 	public static List<EntregaList> ordenarEntrega(List<EntregaList> listaEntregas){
@@ -137,5 +139,9 @@ public class EntregaList {
 	
 	public void setDh_entrega(String dhEntregue){
 		Dh_entrega = dhEntregue;
+	}
+	
+	public Long getIdEntrega(){
+		return idEntrega;
 	}
 }

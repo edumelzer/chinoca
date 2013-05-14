@@ -83,6 +83,9 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		mListaClientes = (ListView)findViewById(R.id.lvClientes);
 		
 		entrega = new EntregaList();
+		
+		//dialogAtualizacao();
+		
 		if(atualiza){
 				
 	        String dados = extras.getString("dados").replaceAll("\\[|\\]", "");
@@ -309,7 +312,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		return true;
 	}
 
-	public boolean dialogAtualizacao(){
+	public void dialogAtualizacao(){
 		
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 				getBaseContext());
@@ -336,7 +339,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 				AlertDialog alertDialog = alertDialogBuilder.create();
  
 				alertDialog.show();
-				return atualiza;
+
 	}
 	
 }
