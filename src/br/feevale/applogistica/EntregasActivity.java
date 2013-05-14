@@ -55,7 +55,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	private DevOpenHelper helper;
 	private Bundle extras;
 	private JSONObject job;
-	boolean atualiza;
+	boolean atualiza = true;
 	
 	private DaoMaster daoMaster;
 	private DaoSession daoSession;
