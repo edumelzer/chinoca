@@ -24,4 +24,21 @@
         android:text="TextView"
         android:textSize="25dp" />
 
+    <TextView
+        android:id="@+id/tvMelhorRota"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvCliente"
+        android:layout_alignBottom="@+id/tvCliente"
+        android:layout_alignParentLeft="true"
+        android:text="TextView" />
+ 
+    <View
+        android:id="@+id/barra"
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:layout_alignBottom="@+id/tvEndereco"
+        android:layout_alignParentLeft="true"
+        android:background="@android:color/darker_gray" />
+
 </RelativeLayout>
