@@ -50,6 +50,10 @@ public class ProdutoAdapter extends BaseAdapter {
 		
 		tvProduto.setText(mListaProdutos.get(position).getDescricao());
 		
+		if(mListaProdutos.get(position).getDh_leitura() != null){
+			ckbProduto.setChecked(true);
+		}
+		
 		return convertView;
 	}
 

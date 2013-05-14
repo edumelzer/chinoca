@@ -2,12 +2,14 @@ package br.feevale.applogistica;
 
 import br.feevale.applogistica.database.orm.Cliente;
 import br.feevale.applogistica.database.orm.Entrega;
-import br.feevale.applogistica.database.orm.EntregaDao;
 import android.os.Bundle;
 import android.R.menu;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,14 +29,11 @@ public class DetalhesEntregaActivity extends Activity {
 		Bundle params = intent.getExtras();
 		mEntregaId    = params.getLong("entregaId");
 		
-		//mEntrega = 
-		
 		startData();
 		startComponents();
 	}
 
 	private void startData() {
-		
 		mCliente = new Cliente();
 		mCliente.setFantasia("Lojas Colombo");
 		mCliente.setBairro("canudos");
@@ -63,6 +62,7 @@ public class DetalhesEntregaActivity extends Activity {
 		tvOrder        = (TextView)findViewById(R.id.tvOrder);
 		tvVolume       = (TextView)findViewById(R.id.tvVolume);
 		tvGln          = (TextView)findViewById(R.id.tvGln);
+		imgDoc         = (ImageView)findViewById(R.id.imgDoc);
 		
 		tvClient.setText(mCliente.getFantasia());
 		String address = mCliente.getLogradouro() + ", " + mCliente.getNumero() + ", bairro " + mCliente.getBairro() + ", " + mCliente.getCidade() + ", CEP " + mCliente.getCep();
@@ -74,13 +74,14 @@ public class DetalhesEntregaActivity extends Activity {
 		tvOrder.setText(mEntrega.getOrdem().toString());
 		tvVolume.setText(mEntrega.getVolumes().toString());
 		tvGln.setText(mEntrega.getGln());
-		/*
+		
 		if(mEntrega.getImagem_documento() == null){
-			
-			Bitmap bmp = BitmapFactory.decodeFile(mPoint.getImagem());
-			mIvPhoto.setImageBitmap(bmp);		
-
-		}*/
+			Bitmap bmp = BitmapFactory.decodeFile(mEntrega.getImagem_documento());
+			imgDoc.setImageBitmap(bmp);		
+		}
+		else{
+			imgDoc.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	@Override

@@ -176,7 +176,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		entrega.setCliente( job.get("razao_social").toString());
 		entrega.setDh_maxima(job.get("dh_maxima").toString());
 		entrega.setMelhor_rota(job.get("melhor_rota").toString());
-		entrega.setIdEntrega(Long.getLong(job.get("id_entrega").toString()));
+		entrega.setIdEntrega(Long.valueOf(job.get("id_entrega").toString()));
 		
 		mClientesList.add(entrega);
 		
