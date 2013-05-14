@@ -176,6 +176,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		entrega.setCliente( job.get("razao_social").toString());
 		entrega.setDh_maxima(job.get("dh_maxima").toString());
 		entrega.setMelhor_rota(job.get("melhor_rota").toString());
+		entrega.setIdEntrega(Long.getLong(job.get("id_entrega").toString()));
 		
 		mClientesList.add(entrega);
 		
@@ -197,6 +198,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 			entrega.setCliente( cli.getRazao_social());
 			entrega.setDh_maxima(ent.getDh_maxima());
 			entrega.setMelhor_rota(ent.getMelhor_rota());
+			entrega.setIdEntrega(ent.getId_web());
 			mClientesList.add(entrega);
 		}
 	}
@@ -295,8 +297,10 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		Intent intent = new Intent(getBaseContext(), ProdutosEntregaActivity.class);
 		Bundle params = new Bundle();
 		//int id = arg0.findViewById(R.id.tvCliente);
-		Toast.makeText(EntregasActivity.this, arg0.getItemAtPosition(arg2).toString(), Toast.LENGTH_SHORT).show();
-		params.putLong("entregaId", 1);
+		//Toast.makeText(EntregasActivity.this, , Toast.LENGTH_SHORT).show();
+		System.out.println("IdEntrega: " +  mEntregasOrdenadas.get(arg2).getEndereco());
+	    params.putLong("entregaId", mEntregasOrdenadas.get(arg2).getIdEntrega());
+
 		intent.putExtras(params);
 		startActivity(intent);
 	}
@@ -306,7 +310,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		Intent intent = new Intent(getBaseContext(), DetalhesEntregaActivity.class);
 		Bundle params = new Bundle();
 		
-		params.putLong("entregaId", 1);
+		//params.putLong("entregaId", mEntregasOrdenadas.get(arg2).getIdEntrega());
 		intent.putExtras(params);
 		startActivity(intent);
 		return true;

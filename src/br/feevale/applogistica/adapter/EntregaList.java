@@ -144,4 +144,9 @@ public class EntregaList {
 	public Long getIdEntrega(){
 		return idEntrega;
 	}
+	
+	public void setIdEntrega(Long id_entrega){
+		idEntrega = id_entrega;
+	}
+	
 }

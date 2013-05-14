@@ -187,7 +187,7 @@ public class LoginActivity extends Activity {
 		protected Boolean doInBackground(Void... parameters) {
 	
 			try {
-				Thread.sleep(1000);
+				//Thread.sleep(1000);
 				String response = "";
 
 				WebService webService = new WebService(URL_AUTH);
@@ -210,30 +210,20 @@ public class LoginActivity extends Activity {
 				idMotorista   = Integer.parseInt(o.get("id_motorista").toString());
 				nomeMotorista = o.get("nome").toString();
 				
-				
-				
+				System.out.println("Buscou");
 				ConsumerService c = new ConsumerService();
 				webService = new WebService(URL_DADOS);
 				params = new HashMap<String, String>();
 			    params.put("id", String.valueOf(idMotorista ));
 			    dados = webService.webGet("", params);
-			    
+			    System.out.println("Buscou");
 				
-			} catch (InterruptedException e) {
-				return false;
+			//} catch (InterruptedException e) {
+			//	return false;
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			/* Teste conexão
-			 * for (String credential : DUMMY_CREDENTIALS) {
-				String[] pieces = credential.split(":");
-				if (pieces[0].equals(mUsuario)) {
-					// Account exists, return true if the password matches.
-					return pieces[1].equals(mPassword);
-				}
-			}*/
 
 			// TODO: register the new account here.
 			return true;

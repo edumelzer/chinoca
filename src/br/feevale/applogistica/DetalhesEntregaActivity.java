@@ -2,6 +2,7 @@ package br.feevale.applogistica;
 
 import br.feevale.applogistica.database.orm.Cliente;
 import br.feevale.applogistica.database.orm.Entrega;
+import br.feevale.applogistica.database.orm.EntregaDao;
 import android.os.Bundle;
 import android.R.menu;
 import android.app.Activity;
@@ -26,11 +27,14 @@ public class DetalhesEntregaActivity extends Activity {
 		Bundle params = intent.getExtras();
 		mEntregaId    = params.getLong("entregaId");
 		
+		//mEntrega = 
+		
 		startData();
 		startComponents();
 	}
 
 	private void startData() {
+		
 		mCliente = new Cliente();
 		mCliente.setFantasia("Lojas Colombo");
 		mCliente.setBairro("canudos");
@@ -70,13 +74,13 @@ public class DetalhesEntregaActivity extends Activity {
 		tvOrder.setText(mEntrega.getOrdem().toString());
 		tvVolume.setText(mEntrega.getVolumes().toString());
 		tvGln.setText(mEntrega.getGln());
-		
+		/*
 		if(mEntrega.getImagem_documento() == null){
 			
 			Bitmap bmp = BitmapFactory.decodeFile(mPoint.getImagem());
 			mIvPhoto.setImageBitmap(bmp);		
 
-		}
+		}*/
 	}
 
 	@Override
