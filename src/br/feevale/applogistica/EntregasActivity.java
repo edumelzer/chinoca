@@ -37,24 +37,24 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	
 	private List<EntregaList> mClientesList, mEntregasOrdenadas;
 	private ListView mListaClientes;
-    private SQLiteDatabase db;
-    private Cliente clienteDb;
-    private Entrega entregaDb;
-    private EntregaList entrega;
-    private Motorista motistaDb;
-    private Long idMotorista;
-    private String nomeMotorista;
-    private DevOpenHelper helper;
-    private Bundle extras;
-    private JSONObject job;
-    
-    private EditText editText;
-
-    private DaoMaster daoMaster;
-    private DaoSession daoSession;
-    private EntregaDao entregasDao;
-    private ClienteDao  clientesDao;
-    private MotoristaDao  motoristasDao;
+	private SQLiteDatabase db;
+	private Cliente clienteDb;
+	private Entrega entregaDb;
+	private EntregaList entrega;
+	private Motorista motistaDb;
+	private Long idMotorista;
+	private String nomeMotorista;
+	private DevOpenHelper helper;
+	private Bundle extras;
+	private JSONObject job;
+	
+	private EditText editText;
+	
+	private DaoMaster daoMaster;
+	private DaoSession daoSession;
+	private EntregaDao entregasDao;
+	private ClienteDao  clientesDao;
+	private MotoristaDao  motoristasDao;
 
     private Cursor cursor;
 
@@ -167,27 +167,27 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		
 		helper = new DaoMaster.DevOpenHelper(this, "applogistica-db", null);
 		db = helper.getWritableDatabase();
-        daoMaster = new DaoMaster(db);
-        daoSession = daoMaster.newSession();
-        entregasDao = daoSession.getEntregaDao();
-        clientesDao = daoSession.getClienteDao();
-        motoristasDao = daoSession.getMotoristaDao();
+		daoMaster = new DaoMaster(db);
+		daoSession = daoMaster.newSession();
+		entregasDao = daoSession.getEntregaDao();
+		clientesDao = daoSession.getClienteDao();
+		motoristasDao = daoSession.getMotoristaDao();
         
 	}
 	
 	private void populaInfoMotorista() throws JSONException{
 		
-        idMotorista = Long.parseLong(String.valueOf((extras.getInt("id"))));
-        nomeMotorista = String.valueOf((extras.getInt("nome")));
+		idMotorista = Long.parseLong(String.valueOf((extras.getInt("id"))));
+		nomeMotorista = String.valueOf((extras.getInt("nome")));
         
-        Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-        motistaDb = new Motorista(
-        		idMotorista,
-        		idMotorista,
-        		nomeMotorista, 
-        		job.get("placa").toString(), 
-        		formatter.format(Calendar.getInstance().getTime()) );
+		motistaDb = new Motorista(
+				idMotorista,
+				idMotorista,
+				nomeMotorista, 
+				job.get("placa").toString(), 
+				formatter.format(Calendar.getInstance().getTime()) );
 
 		List<Motorista> motoristasTest = motoristasDao.queryBuilder()
 		        .where(MotoristaDao.Properties.Id_web.in(idMotorista)).list();
