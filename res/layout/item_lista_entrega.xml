@@ -7,12 +7,12 @@
 
    <TextView
         android:id="@+id/tvEndereco"
-        android:layout_width="250dp"
+        android:layout_width="250sp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="TextView TextView TextView"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/tvCliente"
@@ -20,13 +20,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tvEndereco"
-        android:layout_marginRight="51dp"
+        android:layout_marginRight="51sp"
         android:text="TextView"
-        android:textSize="25dp" />
+        android:textSize="25sp" />
 
     <TextView
         android:id="@+id/tvMelhorRota"
-        android:layout_width="250dp"
+        android:layout_width="120sp"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tvCliente"
         android:layout_alignBottom="@+id/tvCliente"
@@ -36,7 +36,7 @@
     <View
         android:id="@+id/barra"
         android:layout_width="fill_parent"
-        android:layout_height="30dp"
+        android:layout_height="30sp"
         android:layout_alignBottom="@+id/tvEndereco"
         android:layout_alignParentLeft="true"
         android:background="@android:color/darker_gray" />

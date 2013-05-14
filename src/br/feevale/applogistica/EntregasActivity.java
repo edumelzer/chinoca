@@ -40,9 +40,13 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
     private SQLiteDatabase db;
     private Cliente clienteDb;
     private Entrega entregaDb;
+    private EntregaList entrega;
     private Motorista motistaDb;
     private Long idMotorista;
     private String nomeMotorista;
+    private DevOpenHelper helper;
+    private Bundle extras;
+    private JSONObject job;
     
     private EditText editText;
 
@@ -63,19 +67,13 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		Bundle extras = getIntent().getExtras();
 		
 		//Iniciar banco de dados...
-		DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "notes-db", null);
-		db = helper.getWritableDatabase();
-        daoMaster = new DaoMaster(db);
-        daoSession = daoMaster.newSession();
-        entregasDao = daoSession.getEntregaDao();
-        clientesDao = daoSession.getClienteDao();
-        motoristasDao = daoSession.getMotoristaDao();
+		iniciaDataBase();
         
 		mClientesList = new ArrayList<EntregaList>();
 		
 		mListaClientes = (ListView)findViewById(R.id.lvClientes);
 		
-		EntregaList entrega = new EntregaList();
+		entrega = new EntregaList();
         
         String dados = extras.getString("dados").replaceAll("\\[|\\]", "");
         String[] strs = dados.split("(?<=\\},)(?=\\{)");
@@ -83,66 +81,40 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
         boolean firstLoop = true;
         
 		for (String s : strs) {
-		    //System.out.println(s);     
+
 			try {
-				JSONObject o = new JSONObject(s);
+				job = new JSONObject(s);
 				
 				//Insere motorista
 				if(firstLoop){
-			        idMotorista = Long.parseLong(String.valueOf((extras.getInt("id"))));
-			        nomeMotorista = String.valueOf((extras.getInt("nome")));
-			        
-			        Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-			        //String s = formatter.format(date);
-			        //System.out.println("Data atual:"+formatter.format(Calendar.getInstance().getTime()));
-			        motistaDb = new Motorista(
-			        		idMotorista,
-			        		idMotorista,
-			        		nomeMotorista, 
-			        		o.get("placa").toString(), 
-			        		formatter.format(Calendar.getInstance().getTime()) );
-			        
-			        //
+					populaInfoMotorista();
 			        firstLoop = false;
-			        //Long id, String nome, String placa, String dh_sincronismo
-			        //
-			        motoristasDao.insert(motistaDb);
 				}
 				
 				//Popula Adapter
-				entrega = new EntregaList();
-				entrega.setFantasia(o.get("fantasia").toString());
-				entrega.setBairro(  o.get("bairro").toString());
-				entrega.setNumero(  Integer.parseInt(o.get("numero").toString()));
-				entrega.setEndereco(o.get("logradouro").toString());
-				entrega.setCidade(  o.get("cidade").toString());
-				entrega.setCliente( o.get("razao_social").toString());
-				mClientesList.add(entrega);
-				
-				//
-				Long idCliente = Long.parseLong(o.get("id_cliente").toString());
+				populaAdapterEntrega();				
+
+				Long idCliente = Long.parseLong(job.get("id_cliente").toString());
 				
 				System.out.println("id cliente Long:"+idCliente);
-				System.out.println("id cliente String:"+o.get("id_cliente").toString());
+				System.out.println("id cliente String:"+job.get("id_cliente").toString());
 				
 				//Cria cliente
 				clienteDb = new Cliente(
 						 idCliente
 						,idCliente
-						,o.get("razao_social").toString()
-						,o.get("fantasia").toString()
-						,o.get("logradouro").toString()
-						,Integer.parseInt(o.get("numero").toString())
-						,o.get("complemento").toString()
-						,o.get("bairro").toString()
-						,o.get("cidade").toString()
-						,o.get("uf").toString()
-						,o.get("cep").toString()
-						, Long.getLong(o.get("latitude").toString())
-						, Long.getLong(o.get("longitude").toString())
+						,job.get("razao_social").toString()
+						,job.get("fantasia").toString()
+						,job.get("logradouro").toString()
+						,Integer.parseInt(job.get("numero").toString())
+						,job.get("complemento").toString()
+						,job.get("bairro").toString()
+						,job.get("cidade").toString()
+						,job.get("uf").toString()
+						,job.get("cep").toString()
+						,Long.getLong(job.get("latitude").toString())
+						,Long.getLong(job.get("longitude").toString())
 						);
-				
-				//A tabela precisa ser um cliente para ser inserida...
 				
 				List<Cliente> clientesTest = clientesDao.queryBuilder()
 				        .where(ClienteDao.Properties.Id_web.in(idCliente)).list();
@@ -151,34 +123,32 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 					clientesDao.insert(clienteDb);
 				}
 				
-				/*Cliente clienteTest = clientesDao.load(idCliente);
-				if(clienteTest.getId() != idCliente){
-					System.out.println("Nome do cliente:"+clienteTest.getRazao_social());
-					clientesDao.insertOrReplace(clienteDb);
-				}*/
-				
-				
 				//Criar entregas
 				entregaDb = new Entrega(
-						 Long.parseLong(o.get("id_entrega").toString())
-						,Long.parseLong(o.get("id_entrega").toString())
+						 Long.parseLong(job.get("id_entrega").toString())
+						,Long.parseLong(job.get("id_entrega").toString())
 						,idCliente
 						,idMotorista
-						,Integer.parseInt(o.get("ordem").toString())
-						,Integer.parseInt(o.get("volumes").toString())
-						,o.get("dh_maxima").toString()
-						,o.get("gln").toString()
-						,o.get("melhor_rota").toString()
-						,o.get("nome_contato").toString()
-						,o.get("telefone").toString()
+						,Integer.parseInt(job.get("ordem").toString())
+						,Integer.parseInt(job.get("volumes").toString())
+						,job.get("dh_maxima").toString()
+						,job.get("gln").toString()
+						,job.get("melhor_rota").toString()
+						,job.get("nome_contato").toString()
+						,job.get("telefone").toString()
 						,""
 						,""
 						,""
 						);
 				
-				entregasDao.insertOrReplace(entregaDb);
+				List<Entrega> entregasTest = entregasDao.queryBuilder()
+				        .where(EntregaDao.Properties.Id_web.in(Long.parseLong(job.get("id_entrega").toString()))).list();
 				
-				System.out.println(o.get("placa").toString());
+				if(entregasTest.isEmpty()){
+					entregasDao.insert(entregaDb);
+				}
+				
+				System.out.println(job.get("placa").toString());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -193,6 +163,55 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		mListaClientes.setOnItemLongClickListener(this);
 	}
 
+	private void iniciaDataBase(){
+		
+		helper = new DaoMaster.DevOpenHelper(this, "applogistica-db", null);
+		db = helper.getWritableDatabase();
+        daoMaster = new DaoMaster(db);
+        daoSession = daoMaster.newSession();
+        entregasDao = daoSession.getEntregaDao();
+        clientesDao = daoSession.getClienteDao();
+        motoristasDao = daoSession.getMotoristaDao();
+        
+	}
+	
+	private void populaInfoMotorista() throws JSONException{
+		
+        idMotorista = Long.parseLong(String.valueOf((extras.getInt("id"))));
+        nomeMotorista = String.valueOf((extras.getInt("nome")));
+        
+        Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
+        motistaDb = new Motorista(
+        		idMotorista,
+        		idMotorista,
+        		nomeMotorista, 
+        		job.get("placa").toString(), 
+        		formatter.format(Calendar.getInstance().getTime()) );
+
+		List<Motorista> motoristasTest = motoristasDao.queryBuilder()
+		        .where(MotoristaDao.Properties.Id_web.in(idMotorista)).list();
+		
+		if(motoristasTest.isEmpty()){
+	        motoristasDao.insert(motistaDb);
+		}
+	}
+	
+	private void populaAdapterEntrega() throws JSONException{
+		
+		entrega = new EntregaList();
+		entrega.setFantasia(job.get("fantasia").toString());
+		entrega.setBairro(  job.get("bairro").toString());
+		entrega.setNumero(  Integer.parseInt(job.get("numero").toString()));
+		entrega.setEndereco(job.get("logradouro").toString());
+		entrega.setCidade(  job.get("cidade").toString());
+		entrega.setCliente( job.get("razao_social").toString());
+		entrega.setDh_maxima(job.get("dh_maxima").toString());
+		entrega.setMelhor_rota(job.get("melhor_rota").toString());
+		
+		mClientesList.add(entrega);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
