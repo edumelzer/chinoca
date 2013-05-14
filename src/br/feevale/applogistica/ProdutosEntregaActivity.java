@@ -30,16 +30,13 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 	private ListView mLvProdutosEntrega;
 	private List<Produto> mListaProdutos;
     private SQLiteDatabase db;
+    private DevOpenHelper helper;
 
     public static final String URL_DADOS = "https://online.viamarte.com.br/projetoandroid/dadosentrega/";
-    
-    private EditText editText;
 
     private DaoMaster daoMaster;
     private DaoSession daoSession;
     private ProdutoDao produtoDao;
-
-    private Cursor cursor;
 	
 	
 	@Override
@@ -47,26 +44,11 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_produtos_entrega);
 		
-		mLvProdutosEntrega = (ListView)findViewById(R.id.lvProdutosEntrega);
-		
 		Bundle extras = getIntent().getExtras();
 		
 		//Iniciar banco de dados...
-		DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "notes-db", null);
-		db = helper.getWritableDatabase();
-        daoMaster = new DaoMaster(db);
-        daoSession = daoMaster.newSession();
-        produtoDao = daoSession.getProdutoDao();
+		iniciaDataBase();
         
-        /* Testes Eduardo;
-         * String idColumn = ProdutosDao.Properties.Id.columnName;
-        String orderBy = idColumn + " COLLATE LOCALIZED ASC";
-        cursor = db.query(produtoDao.getTablename(), produtoDao.getAllColumns(), null, null, null, null, orderBy);
-        String[] from = { idColumn, ProdutosDao.Properties.Descricao.columnName };
-        int[] to = { android.R.id.text1, android.R.id.text2 };
-		*/
-        
-        //Busca produtos do webservice
 		WebService webService = new WebService(URL_DADOS);
 		String response = "";
 		
@@ -75,14 +57,10 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 
         response = webService.webGet("", params);
         
+		mLvProdutosEntrega = (ListView)findViewById(R.id.lvProdutosEntrega);
+        
 		mListaProdutos = new ArrayList<Produto>();
 
-		String str = "{id:\"123\",name:\"myName\"}{id:\"456\",name:\"yetanotherName\"}{id:\"456\",name:\"anotherName\"}";
-		String[] strs = str.split("(?<=\\})(?=\\{)");
-		for (String s : strs) {
-		    System.out.println(s);          
-		}
-		
 		
 		Produto prod = new Produto();
 		prod.setDescricao("TELEVISAO SAMSUNG 32 POLEG.");
@@ -105,6 +83,16 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		
 	}
 
+	private void iniciaDataBase(){
+		
+		helper = new DaoMaster.DevOpenHelper(this, "notes-db", null);
+		db = helper.getWritableDatabase();
+		daoMaster = new DaoMaster(db);
+		daoSession = daoMaster.newSession();
+		produtoDao = daoSession.getProdutoDao();
+        
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

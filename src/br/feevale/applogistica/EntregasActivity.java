@@ -19,11 +19,12 @@ import br.feevale.applogistica.database.orm.EntregaDao;
 import br.feevale.applogistica.database.orm.MotoristaDao;
 import br.feevale.applogistica.database.orm.Motorista;
 import br.feevale.applogistica.database.orm.DaoMaster.DevOpenHelper;
+import br.feevale.applogistica.database.orm.Produto;
+import br.feevale.applogistica.database.orm.ProdutoDao;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.view.View;
@@ -40,6 +41,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	private SQLiteDatabase db;
 	private Cliente clienteDb;
 	private Entrega entregaDb;
+	private Produto produtoDb;
 	private EntregaList entrega;
 	private Motorista motistaDb;
 	private Long idMotorista;
@@ -48,15 +50,14 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	private Bundle extras;
 	private JSONObject job;
 	
-	private EditText editText;
-	
 	private DaoMaster daoMaster;
 	private DaoSession daoSession;
 	private EntregaDao entregasDao;
 	private ClienteDao  clientesDao;
 	private MotoristaDao  motoristasDao;
+	private ProdutoDao produtoDao;
 
-    private Cursor cursor;
+    //private Cursor cursor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		setContentView(R.layout.activity_entregas);
 		
 		
-		Bundle extras = getIntent().getExtras();
+		extras = getIntent().getExtras();
 		
 		//Iniciar banco de dados...
 		iniciaDataBase();
@@ -94,59 +95,14 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 				//Popula Adapter
 				populaAdapterEntrega();				
 
-				Long idCliente = Long.parseLong(job.get("id_cliente").toString());
-				
-				System.out.println("id cliente Long:"+idCliente);
-				System.out.println("id cliente String:"+job.get("id_cliente").toString());
-				
-				//Cria cliente
-				clienteDb = new Cliente(
-						 idCliente
-						,idCliente
-						,job.get("razao_social").toString()
-						,job.get("fantasia").toString()
-						,job.get("logradouro").toString()
-						,Integer.parseInt(job.get("numero").toString())
-						,job.get("complemento").toString()
-						,job.get("bairro").toString()
-						,job.get("cidade").toString()
-						,job.get("uf").toString()
-						,job.get("cep").toString()
-						,Long.getLong(job.get("latitude").toString())
-						,Long.getLong(job.get("longitude").toString())
-						);
-				
-				List<Cliente> clientesTest = clientesDao.queryBuilder()
-				        .where(ClienteDao.Properties.Id_web.in(idCliente)).list();
-				
-				if(clientesTest.isEmpty()){
-					clientesDao.insert(clienteDb);
-				}
+				//Criar clientes
+				criarCliente();
 				
 				//Criar entregas
-				entregaDb = new Entrega(
-						 Long.parseLong(job.get("id_entrega").toString())
-						,Long.parseLong(job.get("id_entrega").toString())
-						,idCliente
-						,idMotorista
-						,Integer.parseInt(job.get("ordem").toString())
-						,Integer.parseInt(job.get("volumes").toString())
-						,job.get("dh_maxima").toString()
-						,job.get("gln").toString()
-						,job.get("melhor_rota").toString()
-						,job.get("nome_contato").toString()
-						,job.get("telefone").toString()
-						,""
-						,""
-						,""
-						);
+				criarEntrega();
 				
-				List<Entrega> entregasTest = entregasDao.queryBuilder()
-				        .where(EntregaDao.Properties.Id_web.in(Long.parseLong(job.get("id_entrega").toString()))).list();
-				
-				if(entregasTest.isEmpty()){
-					entregasDao.insert(entregaDb);
-				}
+				//Criar Produtos
+				criarProduto();
 				
 				System.out.println(job.get("placa").toString());
 			} catch (JSONException e) {
@@ -164,7 +120,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	}
 
 	private void iniciaDataBase(){
-		
+
 		helper = new DaoMaster.DevOpenHelper(this, "applogistica-db", null);
 		db = helper.getWritableDatabase();
 		daoMaster = new DaoMaster(db);
@@ -172,7 +128,6 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		entregasDao = daoSession.getEntregaDao();
 		clientesDao = daoSession.getClienteDao();
 		motoristasDao = daoSession.getMotoristaDao();
-        
 	}
 	
 	private void populaInfoMotorista() throws JSONException{
@@ -195,6 +150,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		if(motoristasTest.isEmpty()){
 	        motoristasDao.insert(motistaDb);
 		}
+		
 	}
 	
 	private void populaAdapterEntrega() throws JSONException{
@@ -210,11 +166,93 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		entrega.setMelhor_rota(job.get("melhor_rota").toString());
 		
 		mClientesList.add(entrega);
+		
+	}
+	
+	private void criarCliente() throws JSONException{
+		
+		Long idCliente = Long.parseLong(job.get("id_cliente").toString());
+		
+		System.out.println("id cliente Long:"+idCliente);
+		System.out.println("id cliente String:"+job.get("id_cliente").toString());
+		
+		//Cria cliente
+		clienteDb = new Cliente(
+				 idCliente
+				,idCliente
+				,job.get("razao_social").toString()
+				,job.get("fantasia").toString()
+				,job.get("logradouro").toString()
+				,Integer.parseInt(job.get("numero").toString())
+				,job.get("complemento").toString()
+				,job.get("bairro").toString()
+				,job.get("cidade").toString()
+				,job.get("uf").toString()
+				,job.get("cep").toString()
+				,Long.getLong(job.get("latitude").toString())
+				,Long.getLong(job.get("longitude").toString())
+				);
+		
+		List<Cliente> clientesTest = clientesDao.queryBuilder()
+		        .where(ClienteDao.Properties.Id_web.in(idCliente)).list();
+		
+		if(clientesTest.isEmpty()){
+			clientesDao.insert(clienteDb);
+		}
+		
+	}
+	
+	private void criarEntrega() throws JSONException{
+		
+		entregaDb = new Entrega(
+				 Long.parseLong(job.get("id_entrega").toString())
+				,Long.parseLong(job.get("id_entrega").toString())
+				,Long.parseLong(job.get("id_cliente").toString())
+				,idMotorista
+				,Integer.parseInt(job.get("ordem").toString())
+				,Integer.parseInt(job.get("volumes").toString())
+				,job.get("dh_maxima").toString()
+				,job.get("gln").toString()
+				,job.get("melhor_rota").toString()
+				,job.get("nome_contato").toString()
+				,job.get("telefone").toString()
+				,""
+				,""
+				,""
+				);
+		
+		List<Entrega> entregasTest = entregasDao.queryBuilder()
+		        .where(EntregaDao.Properties.Id_web.in(Long.parseLong(job.get("id_entrega").toString()))).list();
+		
+		if(entregasTest.isEmpty()){
+			entregasDao.insert(entregaDb);
+		}
+		
+	}
+	
+	private void criarProduto() throws JSONException{
+		produtoDb = new Produto(
+				 Long.parseLong(job.get("id_produto").toString())
+				,Long.parseLong(job.get("id_produto").toString())
+				,Integer.getInteger(job.get("id_entrega").toString())
+				,job.get("descricao").toString()
+				,job.get("especie").toString()
+				,Long.parseLong(job.get("valor").toString())
+				,job.get("sscc").toString()
+				,null
+				,null
+				);
+		
+		List<Produto> produtosTest = produtoDao.queryBuilder()
+		        .where(ProdutoDao.Properties.Id_web.in(Long.parseLong(job.get("id_produto").toString()))).list();
+		
+		if(produtosTest.isEmpty()){
+			produtoDao.insert(produtoDb);
+		}
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.entregas, menu);
 		return true;
 	}
