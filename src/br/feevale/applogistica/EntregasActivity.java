@@ -1,5 +1,6 @@
 package br.feevale.applogistica;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +25,10 @@ import br.feevale.applogistica.database.orm.ProdutoDao;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.view.View;
@@ -33,6 +37,8 @@ import android.widget.EditText;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class EntregasActivity extends Activity implements OnItemClickListener, OnItemLongClickListener{
 	
@@ -49,6 +55,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	private DevOpenHelper helper;
 	private Bundle extras;
 	private JSONObject job;
+	boolean atualiza;
 	
 	private DaoMaster daoMaster;
 	private DaoSession daoSession;
@@ -64,8 +71,9 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_entregas);
 		
-		
 		extras = getIntent().getExtras();
+		idMotorista = Long.parseLong(String.valueOf((extras.getInt("id"))));
+		nomeMotorista = String.valueOf((extras.getString("nome")));
 		
 		//Iniciar banco de dados...
 		iniciaDataBase();
@@ -75,40 +83,43 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		mListaClientes = (ListView)findViewById(R.id.lvClientes);
 		
 		entrega = new EntregaList();
-        
-        String dados = extras.getString("dados").replaceAll("\\[|\\]", "");
-        String[] strs = dados.split("(?<=\\},)(?=\\{)");
-        
-        boolean firstLoop = true;
-        
-		for (String s : strs) {
-
-			try {
-				job = new JSONObject(s);
+		if(atualiza){
 				
-				//Insere motorista
-				if(firstLoop){
-					populaInfoMotorista();
-			        firstLoop = false;
+	        String dados = extras.getString("dados").replaceAll("\\[|\\]", "");
+	        String[] strs = dados.split("(?<=\\},)(?=\\{)");
+	        
+	        boolean firstLoop = true;
+	        
+			for (String s : strs) {
+	
+				try {
+					job = new JSONObject(s);
+					
+					//Insere motorista
+					if(firstLoop){
+						populaInfoMotorista();
+				        firstLoop = false;
+					}
+					
+					//Popula Adapter
+					populaAdapterEntrega();				
+					
+					//Criar clientes
+					criarCliente();
+					
+					//Criar entregas
+					criarEntrega();
+					
+					//Criar Produtos
+					criarProduto();
+					
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				
-				//Popula Adapter
-				populaAdapterEntrega();				
-
-				//Criar clientes
-				criarCliente();
-				
-				//Criar entregas
-				criarEntrega();
-				
-				//Criar Produtos
-				criarProduto();
-				
-				System.out.println(job.get("placa").toString());
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+		}else{
+			populaAdapterEntregaLocal();
 		}
 
 		mEntregasOrdenadas = EntregaList.ordenarEntrega(mClientesList);
@@ -128,12 +139,10 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		entregasDao = daoSession.getEntregaDao();
 		clientesDao = daoSession.getClienteDao();
 		motoristasDao = daoSession.getMotoristaDao();
+		produtoDao = daoSession.getProdutoDao();
 	}
 	
 	private void populaInfoMotorista() throws JSONException{
-		
-		idMotorista = Long.parseLong(String.valueOf((extras.getInt("id"))));
-		nomeMotorista = String.valueOf((extras.getInt("nome")));
         
 		Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
@@ -167,6 +176,26 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		
 		mClientesList.add(entrega);
 		
+	}
+	
+	private void populaAdapterEntregaLocal(){
+		//Popula adapter do banco:
+		List<Entrega> entregas = entregasDao.loadAll();
+		for(Entrega ent : entregas){
+			
+			Cliente cli = clientesDao.load(ent.getId_cliente());
+			
+			entrega = new EntregaList();
+			entrega.setFantasia(cli.getFantasia());
+			entrega.setBairro(  cli.getBairro());
+			entrega.setNumero(  cli.getNumero());
+			entrega.setEndereco(cli.getLogradouro());
+			entrega.setCidade(  cli.getCidade());
+			entrega.setCliente( cli.getRazao_social());
+			entrega.setDh_maxima(ent.getDh_maxima());
+			entrega.setMelhor_rota(ent.getMelhor_rota());
+			mClientesList.add(entrega);
+		}
 	}
 	
 	private void criarCliente() throws JSONException{
@@ -205,9 +234,9 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	private void criarEntrega() throws JSONException{
 		
 		entregaDb = new Entrega(
-				 Long.parseLong(job.get("id_entrega").toString())
-				,Long.parseLong(job.get("id_entrega").toString())
-				,Long.parseLong(job.get("id_cliente").toString())
+				 Long.valueOf(job.get("id_entrega").toString())
+				,Long.valueOf(job.get("id_entrega").toString())
+				,Long.valueOf(job.get("id_cliente").toString())
 				,idMotorista
 				,Integer.parseInt(job.get("ordem").toString())
 				,Integer.parseInt(job.get("volumes").toString())
@@ -222,7 +251,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 				);
 		
 		List<Entrega> entregasTest = entregasDao.queryBuilder()
-		        .where(EntregaDao.Properties.Id_web.in(Long.parseLong(job.get("id_entrega").toString()))).list();
+		        .where(EntregaDao.Properties.Id_web.in(Long.valueOf(job.get("id_entrega").toString()))).list();
 		
 		if(entregasTest.isEmpty()){
 			entregasDao.insert(entregaDb);
@@ -231,20 +260,21 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	}
 	
 	private void criarProduto() throws JSONException{
+
 		produtoDb = new Produto(
-				 Long.parseLong(job.get("id_produto").toString())
-				,Long.parseLong(job.get("id_produto").toString())
-				,Integer.getInteger(job.get("id_entrega").toString())
+				 Long.valueOf(job.get("id_produto").toString())
+				,Long.valueOf(job.get("id_produto").toString())
+				,Integer.valueOf(job.get("id_entrega").toString())
 				,job.get("descricao").toString()
 				,job.get("especie").toString()
-				,Long.parseLong(job.get("valor").toString())
+				,Long.valueOf(job.get("valor").toString())
 				,job.get("sscc").toString()
-				,null
-				,null
+				,"04-01-2013 08:30:00"
+				,"04-01-2013 08:30:00"
 				);
-		
+
 		List<Produto> produtosTest = produtoDao.queryBuilder()
-		        .where(ProdutoDao.Properties.Id_web.in(Long.parseLong(job.get("id_produto").toString()))).list();
+		        .where(ProdutoDao.Properties.Id_web.in(Long.valueOf(job.get("id_produto").toString()))).list();
 		
 		if(produtosTest.isEmpty()){
 			produtoDao.insert(produtoDb);
@@ -261,6 +291,8 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		Intent intent = new Intent(getBaseContext(), ProdutosEntregaActivity.class);
 		Bundle params = new Bundle();
+		//int id = arg0.findViewById(R.id.tvCliente);
+		Toast.makeText(EntregasActivity.this, arg0.getItemAtPosition(arg2).toString(), Toast.LENGTH_SHORT).show();
 		params.putLong("entregaId", 1);
 		intent.putExtras(params);
 		startActivity(intent);
@@ -270,10 +302,41 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		Intent intent = new Intent(getBaseContext(), DetalhesEntregaActivity.class);
 		Bundle params = new Bundle();
+		
 		params.putLong("entregaId", 1);
 		intent.putExtras(params);
 		startActivity(intent);
 		return true;
 	}
 
+	public boolean dialogAtualizacao(){
+		
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				getBaseContext());
+ 
+			// set title
+			alertDialogBuilder.setTitle("Atualizações");
+ 
+			// set dialog message
+			alertDialogBuilder
+				.setMessage("Deseja atualizar os dados da web?")
+				.setCancelable(false)
+				.setPositiveButton("Sim",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						atualiza = true;
+					}
+				  })
+				.setNegativeButton("No",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						atualiza = false;
+						dialog.cancel();
+					}
+				});
+ 
+				AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+				alertDialog.show();
+				return atualiza;
+	}
+	
 }

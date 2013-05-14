@@ -44,19 +44,12 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_produtos_entrega);
 		
+		
 		Bundle extras = getIntent().getExtras();
 		
 		//Iniciar banco de dados...
 		iniciaDataBase();
-        
-		WebService webService = new WebService(URL_DADOS);
-		String response = "";
-		
-		Map<String, String> params = new HashMap<String, String>();
-        params.put("u", extras.getString("id"));
 
-        response = webService.webGet("", params);
-        
 		mLvProdutosEntrega = (ListView)findViewById(R.id.lvProdutosEntrega);
         
 		mListaProdutos = new ArrayList<Produto>();
@@ -85,7 +78,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 
 	private void iniciaDataBase(){
 		
-		helper = new DaoMaster.DevOpenHelper(this, "notes-db", null);
+		helper = new DaoMaster.DevOpenHelper(this, "applogistica-db", null);
 		db = helper.getWritableDatabase();
 		daoMaster = new DaoMaster(db);
 		daoSession = daoMaster.newSession();
