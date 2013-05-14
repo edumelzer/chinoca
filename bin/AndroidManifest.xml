@@ -41,6 +41,10 @@
             android:name="br.feevale.applogistica.ProdutosEntregaActivity"
             android:label="@string/title_activity_produtos_entrega" >
         </activity>
+        <activity
+            android:name="br.feevale.applogistica.DetalhesEntregaActivity"
+            android:label="@string/title_activity_detalhes_entrega" >
+        </activity>
     </application>
 
 </manifest>

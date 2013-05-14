@@ -1,7 +1,11 @@
 package br.feevale.applogistica;
 
+import java.util.List;
+
 import br.feevale.applogistica.database.orm.Cliente;
+import br.feevale.applogistica.database.orm.ClienteDao;
 import br.feevale.applogistica.database.orm.Entrega;
+import br.feevale.applogistica.database.orm.EntregaDao;
 import android.os.Bundle;
 import android.R.menu;
 import android.app.Activity;
@@ -19,6 +23,7 @@ public class DetalhesEntregaActivity extends Activity {
 	private long mEntregaId;
 	private Entrega mEntrega;
 	private Cliente mCliente;
+	private EntregaDao entregaDao;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +32,18 @@ public class DetalhesEntregaActivity extends Activity {
 		
 		Intent intent = getIntent();
 		Bundle params = intent.getExtras();
-		mEntregaId    = params.getLong("entregaId");
+		//mEntregaId     = params.getLong("entregaId");
+		
+		//List<Entrega> entregaTest = entregaDao.queryBuilder()
+		//        .where(EntregaDao.Properties.Id_web.in(mEntregaId)).list();
 		
 		startData();
 		startComponents();
 	}
 
 	private void startData() {
+		
+		
 		mCliente = new Cliente();
 		mCliente.setFantasia("Lojas Colombo");
 		mCliente.setBairro("canudos");
