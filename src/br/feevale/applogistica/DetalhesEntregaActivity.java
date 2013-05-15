@@ -24,6 +24,7 @@ public class DetalhesEntregaActivity extends Activity {
 	private Entrega mEntrega;
 	private Cliente mCliente;
 	private EntregaDao entregaDao;
+	List<Entrega> entregaList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +35,8 @@ public class DetalhesEntregaActivity extends Activity {
 		Bundle params = intent.getExtras();
 		//mEntregaId     = params.getLong("entregaId");
 		
-		//List<Entrega> entregaTest = entregaDao.queryBuilder()
-		//        .where(EntregaDao.Properties.Id_web.in(mEntregaId)).list();
+		//entregaList = entregaDao.queryBuilder()
+		//		.where(EntregaDao.Properties.Id_web.in(mEntregaId)).list();
 		
 		startData();
 		startComponents();
@@ -43,7 +44,9 @@ public class DetalhesEntregaActivity extends Activity {
 
 	private void startData() {
 		
-		
+		//for(Entrega entrega : entregaList){
+		//	entrega.getId_cliente();
+		//}
 		mCliente = new Cliente();
 		mCliente.setFantasia("Lojas Colombo");
 		mCliente.setBairro("canudos");

@@ -9,6 +9,7 @@ import br.feevale.applogistica.adapter.ProdutoAdapter;
 import br.feevale.applogistica.database.orm.DaoMaster;
 import br.feevale.applogistica.database.orm.DaoMaster.DevOpenHelper;
 import br.feevale.applogistica.database.orm.DaoSession;
+import br.feevale.applogistica.database.orm.Entrega;
 import br.feevale.applogistica.database.orm.Produto;
 import br.feevale.applogistica.database.orm.ProdutoDao;
 import br.feevale.applogistica.webservice.WebService;
@@ -31,7 +32,9 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 	private List<Produto> mListaProdutos;
     private SQLiteDatabase db;
     private DevOpenHelper helper;
-
+    private Integer idEntrega;
+    List<Produto> produtosList;
+    
     public static final String URL_DADOS = "https://online.viamarte.com.br/projetoandroid/dadosentrega/";
 
     private DaoMaster daoMaster;
@@ -46,30 +49,20 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		
 		
 		Bundle extras = getIntent().getExtras();
-		
+		idEntrega = Integer.valueOf(extras.getInt("idEntrega"));
 		//Iniciar banco de dados...
 		iniciaDataBase();
-
+		
 		mLvProdutosEntrega = (ListView)findViewById(R.id.lvProdutosEntrega);
         
 		mListaProdutos = new ArrayList<Produto>();
-
 		
-		Produto prod = new Produto();
-		prod.setDescricao("TELEVISAO SAMSUNG 32 POLEG.");
-		mListaProdutos.add(prod);
+		produtosList = produtoDao.queryBuilder()
+				.where(ProdutoDao.Properties.Id_entrega.in(idEntrega)).list();
 		
-		prod = new Produto();
-		prod.setDescricao("NOTEBOOK POSITIVO");
-		mListaProdutos.add(prod);
-		
-		prod = new Produto();
-		prod.setDescricao("TABLET SAMSUNG NOTE");
-		mListaProdutos.add(prod);
-		
-		prod = new Produto();
-		prod.setDescricao("MESA PRIOR");
-		mListaProdutos.add(prod);
+		for(Produto prod : produtosList){
+			mListaProdutos.add(prod);
+		}
 		
 		ProdutoAdapter produtoAdapter = new ProdutoAdapter(getBaseContext(), mListaProdutos);
 		mLvProdutosEntrega.setAdapter(produtoAdapter);

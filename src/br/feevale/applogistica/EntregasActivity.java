@@ -294,11 +294,10 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+
 		Intent intent = new Intent(getBaseContext(), ProdutosEntregaActivity.class);
 		Bundle params = new Bundle();
-		//int id = arg0.findViewById(R.id.tvCliente);
-		//Toast.makeText(EntregasActivity.this, , Toast.LENGTH_SHORT).show();
-		System.out.println("IdEntrega: " +  mEntregasOrdenadas.get(arg2).getEndereco());
+		System.out.println("Endereço retornado: "+mEntregasOrdenadas.get(arg2).getEndereco());
 	    params.putLong("entregaId", mEntregasOrdenadas.get(arg2).getIdEntrega());
 
 		intent.putExtras(params);
@@ -309,8 +308,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		Intent intent = new Intent(getBaseContext(), DetalhesEntregaActivity.class);
 		Bundle params = new Bundle();
-		
-		//params.putLong("entregaId", mEntregasOrdenadas.get(arg2).getIdEntrega());
+		params.putLong("entregaId", mEntregasOrdenadas.get(arg2).getIdEntrega());
 		intent.putExtras(params);
 		startActivity(intent);
 		return true;
