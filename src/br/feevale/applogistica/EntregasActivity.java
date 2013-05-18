@@ -44,6 +44,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	
 	private List<EntregaList> mClientesList, mEntregasOrdenadas;
 	private ListView mListaClientes;
+	private TextView mTvPlaca;
 	private SQLiteDatabase db;
 	private Cliente clienteDb;
 	private Entrega entregaDb;
@@ -81,6 +82,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		mClientesList = new ArrayList<EntregaList>();
 		
 		mListaClientes = (ListView)findViewById(R.id.lvClientes);
+		mTvPlaca       = (TextView)findViewById(R.id.tvPlaca);
 		
 		entrega = new EntregaList();
 		
@@ -104,9 +106,6 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 				        firstLoop = false;
 					}
 					
-					//Popula Adapter
-					populaAdapterEntrega();				
-					
 					//Criar clientes
 					criarCliente();
 					
@@ -116,16 +115,21 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 					//Criar Produtos
 					criarProduto();
 					
+					//Popula Adapter
+					populaAdapterEntregaLocal();
+					
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}else{
-			populaAdapterEntregaLocal();
+			//populaAdapterEntregaLocal();
 		}
 
 		mEntregasOrdenadas = EntregaList.ordenarEntrega(mClientesList);
+		
+		mTvPlaca.setText("Placa:" + motistaDb.getPlaca().toString());
 		
 		EntregasAdapter entregaAdapter = new EntregasAdapter(getBaseContext(), mEntregasOrdenadas);
 		mListaClientes.setAdapter(entregaAdapter);
@@ -307,7 +311,9 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		
 		Intent intent = new Intent(getBaseContext(), DetalhesEntregaActivity.class);
-		intent.putExtra("entregaId", mEntregasOrdenadas.get(arg2).getIdEntrega().toString());
+		Bundle params = new Bundle();
+		params.putLong("entregaId", mEntregasOrdenadas.get(arg2).getIdEntrega());
+		intent.putExtras(params);
 		startActivity(intent);
 		return true;
 		
