@@ -49,7 +49,8 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		
 		
 		Bundle extras = getIntent().getExtras();
-		idEntrega = Integer.valueOf(extras.getInt("idEntrega"));
+		System.out.println("Extras.: "+extras.getString("entregaId"));
+		idEntrega = Integer.valueOf(extras.getString("entregaId"));
 		//Iniciar banco de dados...
 		iniciaDataBase();
 		
@@ -57,10 +58,14 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
         
 		mListaProdutos = new ArrayList<Produto>();
 		
+		produtoDao.queryBuilder().LOG_SQL = true;
+		System.out.println("Id entrega:"+idEntrega);
+		
 		produtosList = produtoDao.queryBuilder()
 				.where(ProdutoDao.Properties.Id_entrega.in(idEntrega)).list();
 		
 		for(Produto prod : produtosList){
+			System.out.println("Loop: "+ prod.getDescricao());
 			mListaProdutos.add(prod);
 		}
 		
