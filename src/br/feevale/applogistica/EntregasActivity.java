@@ -279,7 +279,9 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 				);
 
 		List<Produto> produtosTest = produtoDao.queryBuilder()
-		        .where(ProdutoDao.Properties.Id_web.in(Long.valueOf(job.get("id_produto").toString()))).list();
+		        .where(ProdutoDao.Properties.Id_web.in(
+		        		Long.valueOf(job.get("id_produto").toString()))
+		        		).list();
 		
 		if(produtosTest.isEmpty()){
 			produtoDao.insert(produtoDb);
@@ -296,25 +298,19 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
 		Intent intent = new Intent(getBaseContext(), ProdutosEntregaActivity.class);
-		//Bundle params = new Bundle();
-		System.out.println("Entrega guardando:"+mEntregasOrdenadas.get(arg2).getIdEntrega());
-		
-	    //params.putLong("entregaId", mEntregasOrdenadas.get(arg2).getIdEntrega());
-		//intent.putExtras(params);
 		intent.putExtra("entregaId", mEntregasOrdenadas.get(arg2).getIdEntrega().toString());
 		startActivity(intent);
+		
 	}
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		
 		Intent intent = new Intent(getBaseContext(), DetalhesEntregaActivity.class);
-		//Bundle params = new Bundle();
-		//params.putLong("entregaId", mEntregasOrdenadas.get(arg2).getIdEntrega());
-		System.out.println("Entrega guardando:"+mEntregasOrdenadas.get(arg2).getIdEntrega());
-		//intent.putExtras(params);
 		intent.putExtra("entregaId", mEntregasOrdenadas.get(arg2).getIdEntrega().toString());
 		startActivity(intent);
 		return true;
+		
 	}
 
 	public void dialogAtualizacao(){

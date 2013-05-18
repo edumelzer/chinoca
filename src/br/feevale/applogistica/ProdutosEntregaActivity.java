@@ -59,13 +59,11 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		mListaProdutos = new ArrayList<Produto>();
 		
 		produtoDao.queryBuilder().LOG_SQL = true;
-		System.out.println("Id entrega:"+idEntrega);
 		
 		produtosList = produtoDao.queryBuilder()
 				.where(ProdutoDao.Properties.Id_entrega.in(idEntrega)).list();
 		
 		for(Produto prod : produtosList){
-			System.out.println("Loop: "+ prod.getDescricao());
 			mListaProdutos.add(prod);
 		}
 		
