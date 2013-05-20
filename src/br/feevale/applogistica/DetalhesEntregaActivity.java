@@ -82,7 +82,7 @@ public class DetalhesEntregaActivity extends Activity {
 		tvGln          = (TextView)findViewById(R.id.tvGln);
 		imgDoc         = (ImageView)findViewById(R.id.imgDoc);
 		
-		tvClient.setText(mCliente.getFantasia());
+		tvClient.setText(mCliente.getFantasia() + " (" + mCliente.getRazao_social() + ")");
 		String address = mCliente.getLogradouro() + ", " + mCliente.getNumero() + ", bairro " + mCliente.getBairro() + ", " + mCliente.getCidade() + ", ";
 		if(mCliente.getComplemento() != null)
 			address += mCliente.getComplemento() + ", ";
