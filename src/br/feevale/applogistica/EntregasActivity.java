@@ -199,7 +199,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 			entrega.setNumero(  cli.getNumero());
 			entrega.setEndereco(cli.getLogradouro());
 			entrega.setCidade(  cli.getCidade());
-			entrega.setCliente( cli.getRazao_social());
+			entrega.setCliente( cli.getFantasia() + " (" + cli.getRazao_social() + ")");
 			entrega.setDh_maxima(ent.getDh_maxima());
 			entrega.setMelhor_rota(ent.getMelhor_rota());
 			entrega.setIdEntrega(ent.getId_web());
