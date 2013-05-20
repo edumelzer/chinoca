@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import br.feevale.applogistica.LoginActivity.UserLoginTask;
 import br.feevale.applogistica.adapter.ProdutoAdapter;
 import br.feevale.applogistica.database.orm.DaoMaster;
 import br.feevale.applogistica.database.orm.DaoMaster.DevOpenHelper;
@@ -12,10 +16,15 @@ import br.feevale.applogistica.database.orm.DaoSession;
 import br.feevale.applogistica.database.orm.Entrega;
 import br.feevale.applogistica.database.orm.Produto;
 import br.feevale.applogistica.database.orm.ProdutoDao;
+import br.feevale.applogistica.webservice.ConsumerService;
 import br.feevale.applogistica.webservice.WebService;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,7 +37,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+@SuppressLint("NewApi")
 public class ProdutosEntregaActivity extends Activity implements OnItemClickListener{
+	
+    static{
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
+	}
 	
 	private ListView mLvProdutosEntrega;
 	private List<Produto> mListaProdutos;
@@ -50,7 +65,6 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		
 		
 		Bundle extras = getIntent().getExtras();
-		System.out.println("Extras.: "+extras.getString("entregaId"));
 		idEntrega = Integer.valueOf(extras.getString("entregaId"));
 		//Iniciar banco de dados...
 		iniciaDataBase();
@@ -70,6 +84,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		
 		ProdutoAdapter produtoAdapter = new ProdutoAdapter(getBaseContext(), mListaProdutos);
 		mLvProdutosEntrega.setAdapter(produtoAdapter);
+		//mLvProdutosEntrega.onItemClickListener(this);
 		
 	}
 
@@ -92,22 +107,27 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		System.out.println("Item Clicado");
 		Toast.makeText(getApplicationContext(), mListaProdutos.get(arg2).getDescricao(), Toast.LENGTH_SHORT);
 		
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		// when you click setting menu
 		switch (item.getItemId()) {
 		case R.id.menu_settings:
-		/*	Intent intent = new Intent(this, MainActivity.class);
-			startActivity(intent);
-			return true;
-		case R.id.item1:
-		*/
-			Toast.makeText(ProdutosEntregaActivity.this, "Item 1", Toast.LENGTH_SHORT).show();
 
+			Toast.makeText(ProdutosEntregaActivity.this, "Efetivando dados da entrega...", Toast.LENGTH_SHORT).show();
+
+			try{
+				int qtdProdutosEntregues = ConsumerService.getInstance().registroEntrega(idEntrega.toString());
+				String message = qtdProdutosEntregues + " produtos foram entregues com sucesso!";
+				Toast.makeText(ProdutosEntregaActivity.this, message, Toast.LENGTH_SHORT).show();
+			}catch(JSONException j){
+				System.out.println("Erro ao comunicar com o webservice: "+j.getMessage());
+				Toast.makeText(ProdutosEntregaActivity.this, "Não foi possível salvar a entrega!", Toast.LENGTH_SHORT).show();
+			}
+			
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

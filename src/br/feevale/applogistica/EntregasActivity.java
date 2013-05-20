@@ -71,9 +71,6 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		extras = getIntent().getExtras();
 		idMotorista = Long.parseLong(String.valueOf((extras.getInt("id"))));
 		nomeMotorista = String.valueOf((extras.getString("nome")));
-		
-		//Iniciar banco de dados...
-		iniciaDataBase();
         
 		mClientesList = new ArrayList<EntregaList>();
 		
@@ -82,7 +79,10 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		
 		entrega = new EntregaList();
 		
-		//dialogAtualizacao();
+		dialogAtualizacao();
+		
+		//Iniciar banco de dados...
+		iniciaDataBase();
 		
 		if(atualiza){
 				
@@ -319,7 +319,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	public void dialogAtualizacao(){
 		
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-				getBaseContext());
+				this);
  
 			// set title
 			alertDialogBuilder.setTitle("Atualizações");
@@ -331,9 +331,10 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 				.setPositiveButton("Sim",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						atualiza = true;
+						getApplicationContext().deleteDatabase("databasename.db");
 					}
 				  })
-				.setNegativeButton("No",new DialogInterface.OnClickListener() {
+				.setNegativeButton("Não",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						atualiza = false;
 						dialog.cancel();

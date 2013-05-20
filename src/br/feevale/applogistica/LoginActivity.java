@@ -10,12 +10,17 @@ import org.json.JSONObject;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -23,9 +28,23 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+@SuppressLint("NewApi")
 public class LoginActivity extends Activity {
 
+	public static final String PREFS_NAME = "xincaPreferencias";
+	private static final String PREF_USERNAME = "username";
+	private static final String PREF_PASSWORD = "password";
+	private static final String PREF_ID = "id_motorista";
+	boolean logarUltimoUsuario = false;
+	
+	static{
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
+	}
+
+	
 	private static final String[] DUMMY_CREDENTIALS = new String[] {
 			"eduardo:swordfish", "admin:swordfish" };
 
@@ -56,7 +75,12 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_loging);
-
+		
+		SharedPreferences pref = getSharedPreferences(PREFS_NAME,MODE_PRIVATE);   
+		String username   = pref.getString(PREF_USERNAME, null);
+		String password   = pref.getString(PREF_PASSWORD, null);
+		idMotorista = Integer.parseInt(pref.getString(PREF_ID, null));
+		
 		// Set up the login form.
 		mUsuario = getIntent().getStringExtra(EXTRA_USUARIO);
 		mUsuarioView = (EditText) findViewById(R.id.usuario);
@@ -83,10 +107,26 @@ public class LoginActivity extends Activity {
 		findViewById(R.id.sign_in_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
-					public void onClick(View view) {
+					public void onClick(View view) {						
 						attemptLogin();
 					}
 				});
+		
+		if (username != null && password != null && String.valueOf(idMotorista) != null) {
+			
+			dialogLogin(username);
+			
+			/*if(logarUltimoUsuario){
+				Intent i = new Intent( getApplication() , EntregasActivity.class );
+				dados = ConsumerService.getInstance().buscaDadosEntregas(idMotorista);
+		    	i.putExtra("id", idMotorista);
+		    	i.putExtra("dados", dados);
+		    	finish();
+		    	startActivity(i);
+			}*/
+	    	
+		}
+		
 	}
 
 	@Override
@@ -182,14 +222,31 @@ public class LoginActivity extends Activity {
 		}
 	}
 
+	
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 		@Override
 		protected Boolean doInBackground(Void... parameters) {
 	
+			if(isCancelled()) return null;
+			
 			try {
 				//Thread.sleep(1000);
+				System.out.println("HUE");
+				/*try{
+					int qtdProdutosEntregues = ConsumerService.getInstance().registroEntrega("37");
+					String message = qtdProdutosEntregues + " produtos foram entregues com sucesso!";
+					Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+				}catch(JSONException j){
+					System.out.println("Erro ao comunicar com o webservice: "+j.getMessage());
+					Toast.makeText(LoginActivity.this, "Não foi possível salvar a entrega!", Toast.LENGTH_SHORT).show();
+				}
+				
+				System.out.println("HUEHUE");
+				*/
 				String response = "";
-
+				
+				Map<String, String> params = new HashMap<String, String>();
+				/*
 				WebService webService = new WebService(URL_AUTH);
 
 				Map<String, String> params = new HashMap<String, String>();
@@ -197,33 +254,43 @@ public class LoginActivity extends Activity {
 		        params.put("p", mPassword);
 
 		        response = webService.webGet("", params);
-
+				*/
+				
+				response = ConsumerService.getInstance().login(mUsuario, mPassword);
 				JSONObject o    = new JSONObject(response);
-
 				int retorno      = Integer.parseInt(o.get("retorno").toString());
 
 				//Senha invalida:
 				if(retorno < 0){
 					return false;
 				}
-
+				
 				idMotorista   = Integer.parseInt(o.get("id_motorista").toString());
 				nomeMotorista = o.get("nome").toString();
+			    
+				getSharedPreferences(PREFS_NAME,MODE_PRIVATE)
+		        .edit()
+		        .putString(PREF_USERNAME, mUsuario)
+		        .putString(PREF_PASSWORD, mPassword)
+		        .putString(PREF_ID, o.get("id_motorista").toString())
+		        .commit();
 				
-				ConsumerService c = new ConsumerService();
-				webService = new WebService(URL_DADOS);
+			    dados = ConsumerService.getInstance().buscaDadosEntregas(String.valueOf(idMotorista));
+			    
+				//ConsumerService c2 = new ConsumerService();
+				/*WebService webService2 = new WebService(URL_DADOS);
 				params = new HashMap<String, String>();
 			    params.put("id", String.valueOf(idMotorista ));
-			    dados = webService.webGet("", params);
-				
-			//} catch (InterruptedException e) {
-			//	return false;
+			    dados = webService2.webGet("", params);
+			    webService2.abort();
+			    webService2 = null; */
+			    
+			    
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			// TODO: register the new account here.
 			return true;
 		}
 
@@ -233,9 +300,9 @@ public class LoginActivity extends Activity {
 			showProgress(false);
 
 			if (success) {
-				finish();
+
 				//Intent i = new Intent( getBaseContext() , LoginViewActivity.class );
-				Intent i = new Intent( getBaseContext() , EntregasActivity.class );
+				Intent i = new Intent( getApplication() , EntregasActivity.class );
 				
 		    	i.putExtra("id", idMotorista);
 		    	i.putExtra("nome", nomeMotorista);
@@ -254,4 +321,41 @@ public class LoginActivity extends Activity {
 			showProgress(false);
 		}
 	}
+	
+	public void dialogLogin(String username){
+		
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				this);
+		
+			// set title
+			alertDialogBuilder.setTitle("Atualizações");
+			
+			// set dialog message
+			alertDialogBuilder
+				.setMessage("O último usuário logado foi "+username+", deseja logar com este mesmo usuário?")
+				.setCancelable(false)
+				.setPositiveButton("Sim",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						logarUltimoUsuario = true;
+						Intent i = new Intent( getApplication() , EntregasActivity.class );
+						dados = ConsumerService.getInstance().buscaDadosEntregas(String.valueOf(idMotorista));
+				    	i.putExtra("id", idMotorista);
+				    	i.putExtra("dados", dados);
+				    	finish();
+				    	startActivity(i);
+					}
+				  })
+				.setNegativeButton("Não",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						logarUltimoUsuario = false;
+						dialog.cancel();
+					}
+				});
+ 
+				AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+				alertDialog.show();
+
+	}
+	
 }

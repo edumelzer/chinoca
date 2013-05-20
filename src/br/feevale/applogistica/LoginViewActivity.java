@@ -7,6 +7,10 @@ import android.widget.TextView;
 
 public class LoginViewActivity extends Activity {
 
+	public static final String PREFS_NAME = "xincaPreferencias";
+	private static final String PREF_USERNAME = "username";
+	private static final String PREF_PASSWORD = "password";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
