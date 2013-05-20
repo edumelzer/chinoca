@@ -1,6 +1,5 @@
 package br.feevale.applogistica;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,17 +27,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class EntregasActivity extends Activity implements OnItemClickListener, OnItemLongClickListener{
 	
@@ -115,16 +111,17 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 					//Criar Produtos
 					criarProduto();
 					
-					//Popula Adapter
-					populaAdapterEntregaLocal();
-					
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+			
+			//Popula Adapter
+			populaAdapterEntregaLocal();
+			
 		}else{
-			//populaAdapterEntregaLocal();
+			populaAdapterEntregaLocal();
 		}
 
 		mEntregasOrdenadas = EntregaList.ordenarEntrega(mClientesList);
@@ -189,10 +186,13 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	private void populaAdapterEntregaLocal(){
 		//Popula adapter do banco:
 		List<Entrega> entregas = entregasDao.loadAll();
+
 		for(Entrega ent : entregas){
 			
-			Cliente cli = clientesDao.load(ent.getId_cliente());
+			System.out.println("Ent: " + ent.getId()+" id_web:"+ent.getId_web());
 			
+			Cliente cli = clientesDao.load(ent.getId_cliente());
+
 			entrega = new EntregaList();
 			entrega.setFantasia(cli.getFantasia());
 			entrega.setBairro(  cli.getBairro());
@@ -210,9 +210,6 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	private void criarCliente() throws JSONException{
 		
 		Long idCliente = Long.parseLong(job.get("id_cliente").toString());
-		
-		System.out.println("id cliente Long:"+idCliente);
-		System.out.println("id cliente String:"+job.get("id_cliente").toString());
 		
 		//Cria cliente
 		clienteDb = new Cliente(
@@ -260,7 +257,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 				);
 		
 		List<Entrega> entregasTest = entregasDao.queryBuilder()
-		        .where(EntregaDao.Properties.Id_web.in(Long.valueOf(job.get("id_entrega").toString()))).list();
+		        .where(EntregaDao.Properties.Id_web.in(job.get("id_entrega").toString())).list();
 		
 		if(entregasTest.isEmpty()){
 			entregasDao.insert(entregaDb);
@@ -278,8 +275,8 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 				,job.get("especie").toString()
 				,Long.valueOf(job.get("valor").toString())
 				,job.get("sscc").toString()
-				,"04-01-2013 08:30:00"
-				,"04-01-2013 08:30:00"
+				,""
+				,""
 				);
 
 		List<Produto> produtosTest = produtoDao.queryBuilder()

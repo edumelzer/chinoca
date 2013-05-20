@@ -16,9 +16,11 @@ import br.feevale.applogistica.webservice.WebService;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -40,8 +42,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
     private DaoMaster daoMaster;
     private DaoSession daoSession;
     private ProdutoDao produtoDao;
-	
-	
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -93,6 +94,25 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		Toast.makeText(getApplicationContext(), mListaProdutos.get(arg2).getDescricao(), Toast.LENGTH_SHORT);
 		
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		// when you click setting menu
+		switch (item.getItemId()) {
+		case R.id.menu_settings:
+		/*	Intent intent = new Intent(this, MainActivity.class);
+			startActivity(intent);
+			return true;
+		case R.id.item1:
+		*/
+			Toast.makeText(ProdutosEntregaActivity.this, "Item 1", Toast.LENGTH_SHORT).show();
+
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+
 	}
 	
 }

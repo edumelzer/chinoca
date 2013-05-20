@@ -24,6 +24,7 @@
 	<string name="order">Ordem de entrega:</string>
 	<string name="volume">Volume:</string>
 	<string name="gln">GLN:</string>
+	<string name="sincronizar">Sincronizar</string>
 	<string name="dh_max">Data/Hora maxima para entrega:</string>
 	<string name="phone">Telefone de contato:</string>
 	<string name="dh_delivery">Data/Hora da Entrega:</string>
