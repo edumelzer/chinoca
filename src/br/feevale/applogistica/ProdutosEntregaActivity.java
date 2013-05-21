@@ -11,6 +11,8 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.android.demo.notepad3.R;
+
 import br.feevale.applogistica.LoginActivity.UserLoginTask;
 import br.feevale.applogistica.adapter.ProdutoAdapter;
 import br.feevale.applogistica.database.orm.DaoMaster;
@@ -118,6 +120,9 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		int countClick = clicados.size();
 		if(countClick == mListaProdutos.size()){
 			getMenuInflater().inflate(R.menu.activity_produtos_entrega, menu);
+			super.onCreateOptionsMenu(menu);
+			//chamar método para sincronizar
+	        //menu.add(0, INSERT_ID, 0, "Sincronizar");
 		}else{
 			
 			Toast.makeText(getApplicationContext(), "faltam produtos a serem entregues", Toast.LENGTH_SHORT);
