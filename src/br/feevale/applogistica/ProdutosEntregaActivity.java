@@ -16,6 +16,7 @@ import br.feevale.applogistica.database.orm.DaoSession;
 import br.feevale.applogistica.database.orm.Entrega;
 import br.feevale.applogistica.database.orm.Produto;
 import br.feevale.applogistica.database.orm.ProdutoDao;
+import br.feevale.applogistica.database.orm.EntregaDao;
 import br.feevale.applogistica.webservice.ConsumerService;
 import br.feevale.applogistica.webservice.WebService;
 
@@ -59,6 +60,8 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
     private DaoMaster daoMaster;
     private DaoSession daoSession;
     private ProdutoDao produtoDao;
+    private EntregaDao entregaDao;
+    private Entrega mEntrega;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,8 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		iniciaDataBase();
 		
 		mLvProdutosEntrega = (ListView)findViewById(R.id.lvProdutosEntrega);
-        
+        	mEntrega = entregaDao.load(Long.parseLong(extras.getString("entregaId")));
+        	
 		mListaProdutos = new ArrayList<Produto>();
 		
 		produtoDao.queryBuilder().LOG_SQL = true;
@@ -96,6 +100,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		daoMaster = new DaoMaster(db);
 		daoSession = daoMaster.newSession();
 		produtoDao = daoSession.getProdutoDao();
+		entregaDao = daoSession.getEntregaDao();
         
 	}
 	
@@ -122,6 +127,12 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 
 			try{
 				int qtdProdutosEntregues = ConsumerService.getInstance().registroEntrega(idEntrega.toString());
+				Format formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+				String dhEntrega = formatter.format(Calendar.getInstance().getTime());
+				mEntrega.setDh_entrega(dhEntrega);
+				mEntrega.setDh_sincronismo(dhEntrega);
+				entregaDao.update(mEntrega);
+				
 				String message = qtdProdutosEntregues + " produtos foram entregues com sucesso!";
 				Toast.makeText(ProdutosEntregaActivity.this, message, Toast.LENGTH_SHORT).show();
 			}catch(JSONException j){
