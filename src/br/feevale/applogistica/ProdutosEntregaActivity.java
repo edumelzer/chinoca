@@ -63,9 +63,6 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
     private Integer idEntrega;
     List<Produto> produtosList;
     private List<Integer> clicados = new ArrayList<Integer>();
-    
-    
-    public static final String URL_DADOS = "https://online.viamarte.com.br/projetoandroid/dadosentrega/";
 
     private DaoMaster daoMaster;
     private DaoSession daoSession;
@@ -148,7 +145,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		System.out.println("Item Clicado");
+
 		CheckBox chk = (CheckBox) arg1;
         if(chk.isChecked()) {
         	clicados.add(1);
@@ -195,11 +192,11 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 			mEntrega.setDh_sincronismo(dhEntrega);
 			entregaDao.update(mEntrega);
 			
-			String message = qtdProdutosEntregues + " produtos foram entregues com sucesso!";
+			String message = "Produtos foram entregues com sucesso!";
 			Toast.makeText(ProdutosEntregaActivity.this, message, Toast.LENGTH_SHORT).show();
 		}catch(JSONException j){
 			System.out.println("Erro ao comunicar com o webservice: "+j.getMessage());
-			Toast.makeText(ProdutosEntregaActivity.this, "NÃƒÂ£o foi possÃƒÂ­vel salvar a entrega!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(ProdutosEntregaActivity.this, "Nao foi possi­vel salvar a entrega!", Toast.LENGTH_SHORT).show();
 		}
     }
 	

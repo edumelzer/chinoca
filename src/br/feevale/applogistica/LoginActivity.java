@@ -296,7 +296,7 @@ public class LoginActivity extends Activity {
 						dados = ConsumerService.getInstance().buscaDadosEntregas(String.valueOf(idMotorista));
 					    i.putExtra("id", idMotorista);
 					    i.putExtra("dados", dados);
-					    finish();
+					    //finish();
 					    startActivity(i);
 					}
 				  })
