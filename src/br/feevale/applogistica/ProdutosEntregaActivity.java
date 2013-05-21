@@ -23,6 +23,7 @@ import br.feevale.applogistica.database.orm.EntregaDao;
 import br.feevale.applogistica.webservice.ConsumerService;
 import br.feevale.applogistica.webservice.WebService;
 
+import android.R.bool;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -37,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -57,6 +59,8 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
     private DevOpenHelper helper;
     private Integer idEntrega;
     List<Produto> produtosList;
+    private List<Integer> clicados = new ArrayList<Integer>();
+    
     
     public static final String URL_DADOS = "https://online.viamarte.com.br/projetoandroid/dadosentrega/";
 
@@ -110,17 +114,28 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_produtos_entrega, menu);
+		
+		int countClick = clicados.size();
+		if(countClick == mListaProdutos.size()){
+			getMenuInflater().inflate(R.menu.activity_produtos_entrega, menu);
+		}else{
+			
+			Toast.makeText(getApplicationContext(), "faltam produtos a serem entregues", Toast.LENGTH_SHORT);
+		}
 		return true;
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		System.out.println("Item Clicado");
+		CheckBox chk = (CheckBox) arg1;
+        if(chk.isChecked()) {
+        	clicados.add(1);
+        }
 		Toast.makeText(getApplicationContext(), mListaProdutos.get(arg2).getDescricao(), Toast.LENGTH_SHORT);
 		
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
@@ -140,7 +155,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 				Toast.makeText(ProdutosEntregaActivity.this, message, Toast.LENGTH_SHORT).show();
 			}catch(JSONException j){
 				System.out.println("Erro ao comunicar com o webservice: "+j.getMessage());
-				Toast.makeText(ProdutosEntregaActivity.this, "NÃ£o foi possÃ­vel salvar a entrega!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(ProdutosEntregaActivity.this, "NÃƒÂ£o foi possÃƒÂ­vel salvar a entrega!", Toast.LENGTH_SHORT).show();
 			}
 			
 			return true;
