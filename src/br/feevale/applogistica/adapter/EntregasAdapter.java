@@ -101,9 +101,8 @@ public class EntregasAdapter extends BaseAdapter {
 				}
 			}
 		}
-		else if(mListEntregas.get(position).getDh_entrega() != null){
+		else if(mListEntregas.get(position).getDh_entrega() != null && !mListEntregas.get(position).getDh_entrega().equals("")){
 			//view.setBackgroundColor(@+d);
-			System.out.println("OHYEAH TA ENTREGE");
 			barra.setVisibility(View.VISIBLE);
 		}
 		
