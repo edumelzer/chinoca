@@ -50,7 +50,7 @@ public class LoginActivity extends Activity {
 
 	private UserLoginTask mAuthTask = null;
 
-	// Values for email and password at the time of the login attempt.
+	// Valores para email e password no momento da solicitação de login.
 	private String mUsuario;
 	private String mPassword;
 
@@ -72,7 +72,7 @@ public class LoginActivity extends Activity {
 
 		setContentView(R.layout.activity_loging);
 		
-		// Set up the login form.
+		// Set up login form.
 		mUsuario = getIntent().getStringExtra(EXTRA_USUARIO);
 		mUsuarioView = (EditText) findViewById(R.id.usuario);
 		mUsuarioView.setText(mUsuario);
@@ -140,7 +140,7 @@ public class LoginActivity extends Activity {
 		boolean cancel = false;
 		View focusView = null;
 
-		// Check for a valid password.
+		// Checar por um password valido.
 		if (TextUtils.isEmpty(mPassword)) {
 			mPasswordView.setError(getString(R.string.error_field_required));
 			focusView = mPasswordView;
@@ -151,7 +151,7 @@ public class LoginActivity extends Activity {
 			cancel = true;
 		}
 
-		// Check for a valid username.
+		// Checar por um username valido.
 		if (TextUtils.isEmpty(mUsuario)) {
 			mUsuarioView.setError(getString(R.string.error_field_required));
 			focusView = mUsuarioView;
@@ -173,7 +173,7 @@ public class LoginActivity extends Activity {
 	}
 
 	/**
-	 * Shows the progress UI and hides the login form.
+	 * Exibe a UI de progresso e esconde o login form.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	private void showProgress(final boolean show) {
@@ -237,11 +237,11 @@ public class LoginActivity extends Activity {
 				nomeMotorista = o.get("nome").toString();
 			    
 				getSharedPreferences(PREFS_NAME,MODE_PRIVATE)
-		        .edit()
-		        .putString(PREF_USERNAME, mUsuario)
-		        .putString(PREF_PASSWORD, mPassword)
-		        .putString(PREF_ID, o.get("id_motorista").toString())
-		        .commit();
+			        .edit()
+			        .putString(PREF_USERNAME, mUsuario)
+			        .putString(PREF_PASSWORD, mPassword)
+			        .putString(PREF_ID, o.get("id_motorista").toString())
+			        .commit();
 				
 			    dados = ConsumerService.getInstance().buscaDadosEntregas(String.valueOf(idMotorista));
 			    
@@ -293,10 +293,10 @@ public class LoginActivity extends Activity {
 						logarUltimoUsuario = true;
 						Intent i = new Intent( getApplication() , EntregasActivity.class );
 						dados = ConsumerService.getInstance().buscaDadosEntregas(String.valueOf(idMotorista));
-				    	i.putExtra("id", idMotorista);
-				    	i.putExtra("dados", dados);
-				    	finish();
-				    	startActivity(i);
+					    	i.putExtra("id", idMotorista);
+					    	i.putExtra("dados", dados);
+					    	finish();
+					    	startActivity(i);
 					}
 				  })
 				.setNegativeButton("Não",new DialogInterface.OnClickListener() {
@@ -327,27 +327,27 @@ public class LoginActivity extends Activity {
 				.setPositiveButton("Sim",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						
-						getApplicationContext().deleteDatabase("databasename.db");
+						getApplicationContext().deleteDatabase("applogistica.db");
 						//Intent i = new Intent( getBaseContext() , LoginViewActivity.class );
 						Intent i = new Intent( getApplication() , EntregasActivity.class );
 						
-				    	i.putExtra("id", idMotorista);
-				    	i.putExtra("nome", nomeMotorista);
-				    	i.putExtra("dados", dados);
-				    	i.putExtra("atualiza", true);
-				    	startActivity(i);
+					    	i.putExtra("id", idMotorista);
+					    	i.putExtra("nome", nomeMotorista);
+					    	i.putExtra("dados", dados);
+					    	i.putExtra("atualiza", true);
+					    	startActivity(i);
 					}
 				  })
 				.setNegativeButton("Não",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						//Intent i = new Intent( getBaseContext() , LoginViewActivity.class );
 						Intent i = new Intent( getApplication() , EntregasActivity.class );
-						
-				    	i.putExtra("id", idMotorista);
-				    	i.putExtra("nome", nomeMotorista);
-				    	i.putExtra("dados", dados);
-				    	i.putExtra("atualiza", false);
-				    	startActivity(i);
+							
+					    	i.putExtra("id", idMotorista);
+					    	i.putExtra("nome", nomeMotorista);
+					    	i.putExtra("dados", dados);
+					    	i.putExtra("atualiza", false);
+					    	startActivity(i);
 						dialog.cancel();
 					}
 				});
