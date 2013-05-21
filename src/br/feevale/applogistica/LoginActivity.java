@@ -44,10 +44,6 @@ public class LoginActivity extends Activity {
 		StrictMode.setThreadPolicy(policy);
 	}
 
-	
-	private static final String[] DUMMY_CREDENTIALS = new String[] {
-			"eduardo:swordfish", "admin:swordfish" };
-
 	public static final String EXTRA_USUARIO = "com.example.android.authenticatordemo.extra.EMAIL";
 	public static final String URL_AUTH = "https://online.viamarte.com.br/projetoandroid/auth/";
 	public static final String URL_DADOS = "https://online.viamarte.com.br/projetoandroid/dadosentrega/";
@@ -117,15 +113,6 @@ public class LoginActivity extends Activity {
 			if (username != null && password != null && String.valueOf(idMotorista) != null) {
 				dialogLogin(username);
 			}
-			
-			/*if(logarUltimoUsuario){
-				Intent i = new Intent( getApplication() , EntregasActivity.class );
-				dados = ConsumerService.getInstance().buscaDadosEntregas(idMotorista);
-		    	i.putExtra("id", idMotorista);
-		    	i.putExtra("dados", dados);
-		    	finish();
-		    	startActivity(i);
-			}*/
 			
 		}
 		
@@ -232,31 +219,10 @@ public class LoginActivity extends Activity {
 			if(isCancelled()) return null;
 			
 			try {
-				//Thread.sleep(1000);
-				System.out.println("HUE");
-				/*try{
-					int qtdProdutosEntregues = ConsumerService.getInstance().registroEntrega("37");
-					String message = qtdProdutosEntregues + " produtos foram entregues com sucesso!";
-					Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
-				}catch(JSONException j){
-					System.out.println("Erro ao comunicar com o webservice: "+j.getMessage());
-					Toast.makeText(LoginActivity.this, "Não foi possível salvar a entrega!", Toast.LENGTH_SHORT).show();
-				}
-				
-				System.out.println("HUEHUE");
-				*/
+
 				String response = "";
 				
 				Map<String, String> params = new HashMap<String, String>();
-				/*
-				WebService webService = new WebService(URL_AUTH);
-
-				Map<String, String> params = new HashMap<String, String>();
-		        params.put("u", mUsuario);
-		        params.put("p", mPassword);
-
-		        response = webService.webGet("", params);
-				*/
 				
 				response = ConsumerService.getInstance().login(mUsuario, mPassword);
 				JSONObject o    = new JSONObject(response);
@@ -279,15 +245,6 @@ public class LoginActivity extends Activity {
 				
 			    dados = ConsumerService.getInstance().buscaDadosEntregas(String.valueOf(idMotorista));
 			    
-				//ConsumerService c2 = new ConsumerService();
-				/*WebService webService2 = new WebService(URL_DADOS);
-				params = new HashMap<String, String>();
-			    params.put("id", String.valueOf(idMotorista ));
-			    dados = webService2.webGet("", params);
-			    webService2.abort();
-			    webService2 = null; */
-			    
-			    
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -303,13 +260,8 @@ public class LoginActivity extends Activity {
 
 			if (success) {
 
-				//Intent i = new Intent( getBaseContext() , LoginViewActivity.class );
-				Intent i = new Intent( getApplication() , EntregasActivity.class );
+				dialogAtualizacao();
 				
-		    	i.putExtra("id", idMotorista);
-		    	i.putExtra("nome", nomeMotorista);
-		    	i.putExtra("dados", dados);
-		    	startActivity(i);
 			} else {
 				mPasswordView
 						.setError(getString(R.string.error_incorrect_password));
@@ -350,6 +302,52 @@ public class LoginActivity extends Activity {
 				.setNegativeButton("Não",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						logarUltimoUsuario = false;
+						dialog.cancel();
+					}
+				});
+ 
+				AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+				alertDialog.show();
+
+	}
+	
+	public void dialogAtualizacao(){
+		
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				this);
+ 
+			// set title
+			alertDialogBuilder.setTitle("Atualizações");
+ 
+			// set dialog message
+			alertDialogBuilder
+				.setMessage("Deseja atualizar os dados da web?")
+				.setCancelable(false)
+				.setPositiveButton("Sim",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						
+						getApplicationContext().deleteDatabase("databasename.db");
+						//Intent i = new Intent( getBaseContext() , LoginViewActivity.class );
+						Intent i = new Intent( getApplication() , EntregasActivity.class );
+						
+				    	i.putExtra("id", idMotorista);
+				    	i.putExtra("nome", nomeMotorista);
+				    	i.putExtra("dados", dados);
+				    	i.putExtra("atualiza", true);
+				    	startActivity(i);
+					}
+				  })
+				.setNegativeButton("Não",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						//Intent i = new Intent( getBaseContext() , LoginViewActivity.class );
+						Intent i = new Intent( getApplication() , EntregasActivity.class );
+						
+				    	i.putExtra("id", idMotorista);
+				    	i.putExtra("nome", nomeMotorista);
+				    	i.putExtra("dados", dados);
+				    	i.putExtra("atualiza", false);
+				    	startActivity(i);
 						dialog.cancel();
 					}
 				});

@@ -46,7 +46,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	private Entrega entregaDb;
 	private Produto produtoDb;
 	private EntregaList entrega;
-	private Motorista motistaDb;
+	private Motorista motoristaDb;
 	private Long idMotorista;
 	private String nomeMotorista;
 	private DevOpenHelper helper;
@@ -79,10 +79,11 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		
 		entrega = new EntregaList();
 		
-		dialogAtualizacao();
 		
 		//Iniciar banco de dados...
 		iniciaDataBase();
+		
+		atualiza = extras.getBoolean("atualiza");
 		
 		if(atualiza){
 				
@@ -121,13 +122,19 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 			populaAdapterEntregaLocal();
 			
 		}else{
+			motoristaDb = motoristasDao.load(idMotorista);
 			populaAdapterEntregaLocal();
 		}
 
 		mEntregasOrdenadas = EntregaList.ordenarEntrega(mClientesList);
 		
-		mTvPlaca.setText("Placa:" + motistaDb.getPlaca().toString());
+		if(motoristaDb == null){
+			Intent intent = new Intent(getBaseContext(), DeniedActivity.class);
+			finish();
+			startActivity(intent);
+		}
 		
+		mTvPlaca.setText("Placa:" + motoristaDb.getPlaca().toString());
 		EntregasAdapter entregaAdapter = new EntregasAdapter(getBaseContext(), mEntregasOrdenadas);
 		mListaClientes.setAdapter(entregaAdapter);
 		mListaClientes.setOnItemClickListener(this);
@@ -150,7 +157,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
         
 		Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-		motistaDb = new Motorista(
+		motoristaDb = new Motorista(
 				idMotorista,
 				idMotorista,
 				nomeMotorista, 
@@ -161,7 +168,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		        .where(MotoristaDao.Properties.Id_web.in(idMotorista)).list();
 		
 		if(motoristasTest.isEmpty()){
-	        motoristasDao.insert(motistaDb);
+	        motoristasDao.insert(motoristaDb);
 		}
 		
 	}
@@ -188,8 +195,6 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		List<Entrega> entregas = entregasDao.loadAll();
 
 		for(Entrega ent : entregas){
-			
-			System.out.println("Ent: " + ent.getId()+" id_web:"+ent.getId_web());
 			
 			Cliente cli = clientesDao.load(ent.getId_cliente());
 
@@ -314,37 +319,6 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		startActivity(intent);
 		return true;
 		
-	}
-
-	public void dialogAtualizacao(){
-		
-		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-				this);
- 
-			// set title
-			alertDialogBuilder.setTitle("Atualizações");
- 
-			// set dialog message
-			alertDialogBuilder
-				.setMessage("Deseja atualizar os dados da web?")
-				.setCancelable(false)
-				.setPositiveButton("Sim",new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-						atualiza = true;
-						getApplicationContext().deleteDatabase("databasename.db");
-					}
-				  })
-				.setNegativeButton("Não",new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-						atualiza = false;
-						dialog.cancel();
-					}
-				});
- 
-				AlertDialog alertDialog = alertDialogBuilder.create();
- 
-				alertDialog.show();
-
 	}
 	
 }

@@ -33,12 +33,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 @SuppressLint("NewApi")
-public class ProdutosEntregaActivity extends Activity implements OnItemClickListener{
+public class ProdutosEntregaActivity extends Activity implements OnItemClickListener, android.widget.CompoundButton.OnCheckedChangeListener {
 	
     static{
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -46,6 +47,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 	}
 	
 	private ListView mLvProdutosEntrega;
+	ProdutoAdapter produtoAdapter;
 	private List<Produto> mListaProdutos;
     private SQLiteDatabase db;
     private DevOpenHelper helper;
@@ -82,9 +84,8 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 			mListaProdutos.add(prod);
 		}
 		
-		ProdutoAdapter produtoAdapter = new ProdutoAdapter(getBaseContext(), mListaProdutos);
-		mLvProdutosEntrega.setAdapter(produtoAdapter);
-		//mLvProdutosEntrega.onItemClickListener(this);
+		produtoAdapter = new ProdutoAdapter(getBaseContext(), mListaProdutos);
+		mLvProdutosEntrega.setAdapter(produtoAdapter);		
 		
 	}
 
@@ -129,10 +130,23 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 			}
 			
 			return true;
+		case R.id.chkAll:
+			
+			for ( int i=0; i< produtoAdapter.getCount(); i++ ) {
+				mLvProdutosEntrega.setItemChecked(i, true);
+			}
+			
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 
 	}
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+         System.out.println("Button: "+buttonView.getId());
+         
+    }
 	
 }

@@ -40,7 +40,6 @@ public class WebService{
     HttpGet httpGet = null;
     String webServiceUrl;
  
-    //The serviceName should be the name of the Service you are going to be using.
     public WebService(String serviceName){
         HttpParams myParams = new BasicHttpParams();
  
@@ -52,7 +51,6 @@ public class WebService{
  
     }
  
-    //Use this method to do a HttpPost\WebInvoke on a Web Service
     public String webInvoke(String methodName, Map<String, Object> params) {
  
         JSONObject jsonObject = new JSONObject();
@@ -78,7 +76,6 @@ public class WebService{
  
         StringEntity tmp = null;        
  
-        //httpPost.setHeader("User-Agent", "SET YOUR USER AGENT STRING HERE");
         httpPost.setHeader("Accept",
 "text/html,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
  
@@ -111,7 +108,6 @@ public class WebService{
         return ret;
     }
  
-    //Use this method to do a HttpGet/WebGet on the web service
     public String webGet(String methodName, Map<String, String> params) {
         String getUrl = webServiceUrl + methodName;
  
@@ -144,18 +140,16 @@ public class WebService{
             Log.e("Groshie:", "Err: " + e.getMessage());
         }
 
-        // we assume that the response body contains the error message
         try {
             ret = EntityUtils.toString(response.getEntity());
         } catch (IOException e) {
-        	// Memntira, o response body n tem mensagem nenhum lol
+        	// Mentira, o response body n tem mensagem nenhuma lol
             Log.e("Groshie:", "Err: " + e.getMessage());
         }
 
         return ret;
     }
  
-  //Use this method to do a HttpGet/WebGet on the web service
     public String doPost(String methodName, List<NameValuePair> params) {
         String getUrl = webServiceUrl + methodName;
         
@@ -182,7 +176,6 @@ public class WebService{
             Log.e("Groshie:", e.getMessage());
         }
  
-        // we assume that the response body contains the error message
         try {
             ret = EntityUtils.toString(response.getEntity());
         } catch (IOException e) {
@@ -233,7 +226,7 @@ public class WebService{
                 httpPost.abort();
             }
         } catch (Exception e) {
-            System.out.println("Your App Name Here" + e);
+            System.out.println("Chinoca" + e);
         }
     }
 }
