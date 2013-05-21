@@ -1,6 +1,9 @@
 package br.feevale.applogistica;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,7 +140,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 				Toast.makeText(ProdutosEntregaActivity.this, message, Toast.LENGTH_SHORT).show();
 			}catch(JSONException j){
 				System.out.println("Erro ao comunicar com o webservice: "+j.getMessage());
-				Toast.makeText(ProdutosEntregaActivity.this, "Não foi possível salvar a entrega!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(ProdutosEntregaActivity.this, "NÃ£o foi possÃ­vel salvar a entrega!", Toast.LENGTH_SHORT).show();
 			}
 			
 			return true;
