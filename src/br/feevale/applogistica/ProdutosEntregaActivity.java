@@ -118,6 +118,8 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		
+		getMenuInflater().inflate(R.menu.activity_produtos_entrega, menu);
+		
 		int countClick = clicados.size();
 		if(countClick == mListaProdutos.size()){
 			getMenuInflater().inflate(R.menu.activity_produtos_entrega, menu);

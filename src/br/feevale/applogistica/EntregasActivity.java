@@ -90,6 +90,12 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	        String dados = extras.getString("dados").replaceAll("\\[|\\]", "");
 	        String[] strs = dados.split("(?<=\\},)(?=\\{)");
 	        
+	        if(dados.equals("[]")){
+    			Intent intent = new Intent(getBaseContext(), DeniedActivity.class);
+    			finish();
+    			startActivity(intent);
+	        }
+	        
 	        boolean firstLoop = true;
 	        
 			for (String s : strs) {

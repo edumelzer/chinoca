@@ -76,7 +76,7 @@ public class EntregasAdapter extends BaseAdapter {
 		//horaAtual = 20;
 		//minutoAtual = 40;
 
-		if(mListEntregas.get(position).getDh_entrega() == null){
+		if(mListEntregas.get(position).getDh_entrega() == null || mListEntregas.get(position).getDh_entrega().equals("")){
 			//tvProssimidade.setText("hora =" + horaAtual + ":" + minutoAtual);
 			if((horas < horaAtual) || ((horas == horaAtual) && (minutos < minutoAtual))){
 				tvCliente.setBackgroundColor(Color.RED);
