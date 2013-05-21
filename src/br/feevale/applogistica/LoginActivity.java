@@ -76,11 +76,6 @@ public class LoginActivity extends Activity {
 
 		setContentView(R.layout.activity_loging);
 		
-		SharedPreferences pref = getSharedPreferences(PREFS_NAME,MODE_PRIVATE);   
-		String username   = pref.getString(PREF_USERNAME, null);
-		String password   = pref.getString(PREF_PASSWORD, null);
-		idMotorista = Integer.parseInt(pref.getString(PREF_ID, null));
-		
 		// Set up the login form.
 		mUsuario = getIntent().getStringExtra(EXTRA_USUARIO);
 		mUsuarioView = (EditText) findViewById(R.id.usuario);
@@ -112,9 +107,16 @@ public class LoginActivity extends Activity {
 					}
 				});
 		
-		if (username != null && password != null && String.valueOf(idMotorista) != null) {
+		SharedPreferences pref = getSharedPreferences(PREFS_NAME,MODE_PRIVATE);   
+		if(pref.contains(PREF_ID)){
 			
-			dialogLogin(username);
+			String username   = pref.getString(PREF_USERNAME, null);
+			String password   = pref.getString(PREF_PASSWORD, null);
+			idMotorista = Integer.parseInt(pref.getString(PREF_ID, null));
+			
+			if (username != null && password != null && String.valueOf(idMotorista) != null) {
+				dialogLogin(username);
+			}
 			
 			/*if(logarUltimoUsuario){
 				Intent i = new Intent( getApplication() , EntregasActivity.class );
@@ -124,7 +126,7 @@ public class LoginActivity extends Activity {
 		    	finish();
 		    	startActivity(i);
 			}*/
-	    	
+			
 		}
 		
 	}
