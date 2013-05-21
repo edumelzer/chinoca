@@ -11,7 +11,6 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.android.demo.notepad3.R;
 
 import br.feevale.applogistica.LoginActivity.UserLoginTask;
 import br.feevale.applogistica.adapter.ProdutoAdapter;
@@ -53,6 +52,8 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 	}
+    
+    private static final int SINCRONIZAR = 0;
 	
 	private ListView mLvProdutosEntrega;
 	ProdutoAdapter produtoAdapter;
@@ -122,13 +123,26 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 			getMenuInflater().inflate(R.menu.activity_produtos_entrega, menu);
 			super.onCreateOptionsMenu(menu);
 			//chamar método para sincronizar
-	        //menu.add(0, INSERT_ID, 0, "Sincronizar");
+	        menu.add(0, SINCRONIZAR, 0, "Sincronizar");
+			
+			
 		}else{
 			
 			Toast.makeText(getApplicationContext(), "faltam produtos a serem entregues", Toast.LENGTH_SHORT);
 		}
 		return true;
 	}
+	
+	@Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        switch(item.getItemId()) {
+            case SINCRONIZAR:
+                sincronizar();
+                return true;
+        }
+
+        return super.onMenuItemSelected(featureId, item);
+    }
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
@@ -148,20 +162,7 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
 
 			Toast.makeText(ProdutosEntregaActivity.this, "Efetivando dados da entrega...", Toast.LENGTH_SHORT).show();
 
-			try{
-				int qtdProdutosEntregues = ConsumerService.getInstance().registroEntrega(idEntrega.toString());
-				Format formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
-				String dhEntrega = formatter.format(Calendar.getInstance().getTime());
-				mEntrega.setDh_entrega(dhEntrega);
-				mEntrega.setDh_sincronismo(dhEntrega);
-				entregaDao.update(mEntrega);
-				
-				String message = qtdProdutosEntregues + " produtos foram entregues com sucesso!";
-				Toast.makeText(ProdutosEntregaActivity.this, message, Toast.LENGTH_SHORT).show();
-			}catch(JSONException j){
-				System.out.println("Erro ao comunicar com o webservice: "+j.getMessage());
-				Toast.makeText(ProdutosEntregaActivity.this, "NÃƒÂ£o foi possÃƒÂ­vel salvar a entrega!", Toast.LENGTH_SHORT).show();
-			}
+			sincronizar();
 			
 			return true;
 		case R.id.chkAll:
@@ -181,6 +182,23 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
          System.out.println("Button: "+buttonView.getId());
          
+    }
+    
+    public void sincronizar(){
+    	try{
+			int qtdProdutosEntregues = ConsumerService.getInstance().registroEntrega(idEntrega.toString());
+			Format formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+			String dhEntrega = formatter.format(Calendar.getInstance().getTime());
+			mEntrega.setDh_entrega(dhEntrega);
+			mEntrega.setDh_sincronismo(dhEntrega);
+			entregaDao.update(mEntrega);
+			
+			String message = qtdProdutosEntregues + " produtos foram entregues com sucesso!";
+			Toast.makeText(ProdutosEntregaActivity.this, message, Toast.LENGTH_SHORT).show();
+		}catch(JSONException j){
+			System.out.println("Erro ao comunicar com o webservice: "+j.getMessage());
+			Toast.makeText(ProdutosEntregaActivity.this, "NÃƒÂ£o foi possÃƒÂ­vel salvar a entrega!", Toast.LENGTH_SHORT).show();
+		}
     }
 	
 }
