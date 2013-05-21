@@ -103,6 +103,7 @@ public class EntregasAdapter extends BaseAdapter {
 		}
 		else if(mListEntregas.get(position).getDh_entrega() != null){
 			//view.setBackgroundColor(@+d);
+			System.out.println("OHYEAH TA ENTREGE");
 			barra.setVisibility(View.VISIBLE);
 		}
 		

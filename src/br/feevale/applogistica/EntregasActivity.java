@@ -192,8 +192,10 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 	
 	private void populaAdapterEntregaLocal(){
 		//Popula adapter do banco:
-		List<Entrega> entregas = entregasDao.loadAll();
 
+		List<Entrega> entregas = entregasDao.queryBuilder()
+		        .where(EntregaDao.Properties.Id_motorista.in(idMotorista)).list();
+		
 		for(Entrega ent : entregas){
 			
 			Cliente cli = clientesDao.load(ent.getId_cliente());
@@ -208,6 +210,7 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 			entrega.setDh_maxima(ent.getDh_maxima());
 			entrega.setMelhor_rota(ent.getMelhor_rota());
 			entrega.setIdEntrega(ent.getId_web());
+			entrega.setDh_entrega(ent.getDh_entrega());
 			mClientesList.add(entrega);
 		}
 	}

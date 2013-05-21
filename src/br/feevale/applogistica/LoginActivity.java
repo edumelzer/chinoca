@@ -292,11 +292,12 @@ public class LoginActivity extends Activity {
 					public void onClick(DialogInterface dialog,int id) {
 						logarUltimoUsuario = true;
 						Intent i = new Intent( getApplication() , EntregasActivity.class );
+						//i.putExtra("atualiza", false);
 						dados = ConsumerService.getInstance().buscaDadosEntregas(String.valueOf(idMotorista));
-					    	i.putExtra("id", idMotorista);
-					    	i.putExtra("dados", dados);
-					    	finish();
-					    	startActivity(i);
+					    i.putExtra("id", idMotorista);
+					    i.putExtra("dados", dados);
+					    finish();
+					    startActivity(i);
 					}
 				  })
 				.setNegativeButton("Não",new DialogInterface.OnClickListener() {
