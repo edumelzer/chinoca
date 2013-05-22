@@ -185,18 +185,20 @@ public class ProdutosEntregaActivity extends Activity implements OnItemClickList
     
     public void sincronizar(){
     	try{
-			int qtdProdutosEntregues = ConsumerService.getInstance().registroEntrega(idEntrega.toString());
+			
 			Format formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 			String dhEntrega = formatter.format(Calendar.getInstance().getTime());
 			mEntrega.setDh_entrega(dhEntrega);
 			mEntrega.setDh_sincronismo(dhEntrega);
 			entregaDao.update(mEntrega);
 			
+			int qtdProdutosEntregues = ConsumerService.getInstance().registroEntrega(idEntrega.toString());
+			
 			String message = "Produtos foram entregues com sucesso!";
 			Toast.makeText(ProdutosEntregaActivity.this, message, Toast.LENGTH_SHORT).show();
 		}catch(JSONException j){
 			System.out.println("Erro ao comunicar com o webservice: "+j.getMessage());
-			Toast.makeText(ProdutosEntregaActivity.this, "Nao foi possi­vel salvar a entrega!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(ProdutosEntregaActivity.this, "Nao foi possi­vel salvar a entrega on-line!", Toast.LENGTH_SHORT).show();
 		}
     }
 	

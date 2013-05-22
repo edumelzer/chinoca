@@ -86,7 +86,12 @@ public class EntregasActivity extends Activity implements OnItemClickListener, O
 		atualiza = extras.getBoolean("atualiza");
 		
 		if(atualiza){
-				
+			
+			
+			produtoDao.deleteAll();
+			entregasDao.deleteAll();
+			clientesDao.deleteAll();
+			
 	        String dados = extras.getString("dados").replaceAll("\\[|\\]", "");
 	        String[] strs = dados.split("(?<=\\},)(?=\\{)");
 	        
